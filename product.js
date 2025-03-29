@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    const decodedPath = decodeURIComponent(productPath);
+    // Double decode the product path since it's double encoded in the URL
+    const decodedPath = decodeURIComponent(decodeURIComponent(productPath));
     const productImage = document.getElementById('productImage');
     const productCategoryTitle = document.getElementById('productCategory');
     const categoryBreadcrumb = document.getElementById('categoryBreadcrumb');
