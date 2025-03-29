@@ -102,31 +102,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Modal functionality
+    // Function to open product page
     window.openModal = function(imagePath, category) {
-        const modalElement = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const modalTitle = document.querySelector('.modal-title');
-        const whatsappBtn = document.querySelector('.btn-whatsapp');
-        
-        // Initialize modal if not already initialized
-        let modal = bootstrap.Modal.getInstance(modalElement);
-        if (!modal) {
-            modal = new bootstrap.Modal(modalElement);
-        }
-        
-        modalImage.src = imagePath;
-        modalTitle.textContent = category;
-        
-        // Create shareable URL for the product
-        const productURL = new URL(window.location.href);
+        const productURL = new URL(window.location.origin + '/product.html');
         productURL.searchParams.set('product', encodeURIComponent(imagePath));
         productURL.searchParams.set('category', category);
-        
-        whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${category.toLowerCase()} from Purnima Jewellers: ${productURL.toString()}`;
-        
-        // Show modal
-        modal.show();
+        window.location.href = productURL.toString();
     };
 
     // Filter functionality

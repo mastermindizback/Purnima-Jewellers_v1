@@ -199,6 +199,53 @@ body {
     object-fit: cover;
 }
 
+/* Product Page */
+.product-page {
+    background-color: #f8f9fa;
+}
+
+.product-container {
+    min-height: 80vh;
+    padding: 2rem 0;
+}
+
+.product-image-container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.product-image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-details {
+    padding: 2rem;
+}
+
+.product-details h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--secondary-color);
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--secondary-color);
+}
+
 /* Modal */
 .modal-content {
     border: none;
