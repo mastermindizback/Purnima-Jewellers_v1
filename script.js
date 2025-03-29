@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
     const categoryButtons = document.querySelectorAll('.category-buttons button');
-    const whatsappNumber = ''; // Add your WhatsApp number here
+    const whatsappNumber = '8160922048'; // Add your WhatsApp number here
     
     // Category paths and their display names
     const categories = {
