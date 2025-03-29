@@ -107,15 +107,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get the current domain
         const domain = window.location.origin;
         
-        // Create the product page URL
-        const productURL = new URL('/product.html', domain);
+        // Create the base URL for the product page
+        const baseUrl = `${domain}/product`;
         
-        // Add the query parameters
-        productURL.searchParams.set('product', encodeURIComponent(imagePath));
-        productURL.searchParams.set('category', category);
+        // Create URL with properly encoded parameters
+        const url = new URL(baseUrl);
+        url.searchParams.set('product', imagePath);
+        url.searchParams.set('category', category);
         
         // Navigate to the product page
-        window.location.href = productURL.toString();
+        window.location.href = url.toString();
     };
 
     // Filter functionality
