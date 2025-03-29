@@ -10,16 +10,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Handle the enforced encoding format from catalog.js
-    const decodedPath = productPath
-        .replace(/%252520/g, ' ')  // Replace %252520 with space
-        .replace(/%2F/g, '/');     // Replace %2F with /
+    // First decode the URL-encoded path
+    const decodedPath = decodeURIComponent(productPath);
     
     const productImage = document.getElementById('productImage');
     const productCategoryTitle = document.getElementById('productCategory');
     const categoryBreadcrumb = document.getElementById('categoryBreadcrumb');
     const whatsappBtn = document.getElementById('whatsappBtn');
     const debugShareUrl = document.getElementById('debugShareUrl');
+    
+    console.log('Original path:', productPath);
+    console.log('Decoded path:', decodedPath);
 
     // Set page title
     document.title = `${productCategory} - Purnima Jewellers`;
@@ -36,10 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'catalog.html';
     };
     
-    // Create share URL with the exact same format as catalog.js
-    const path = decodedPath.replace(/ /g, '%20');
-    const encodedPath = path.replace(/%20/g, '%252520').replace(/\//g, '%2F');
-    const shareURL = `https://purnimajewellers.pages.dev/product?product=${encodedPath}&category=${productCategory}`;
+    // Use the original product path for sharing since it's already in the correct format
+    const shareURL = `https://purnimajewellers.pages.dev/product?product=${productPath}&category=${productCategory}`;
     
     // Update WhatsApp button and debug info
     whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${shareURL}`;
