@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
     const categoryButtons = document.querySelectorAll('.category-buttons button');
-    const whatsappNumber = '8160922048'; // Add your WhatsApp number here
+    const whatsappNumber = '918160922048'; // WhatsApp number with country code (91 for India)
     
     // Category paths and their display names
     const categories = {
