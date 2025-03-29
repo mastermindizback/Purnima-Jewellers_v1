@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'catalog.html';
     };
     
-    // Update WhatsApp sharing link with clean URL
-    const cleanURL = new URL(window.location.href);
-    whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${cleanURL.toString()}`;
+    // Update WhatsApp sharing link with exact current URL
+    const currentURL = window.location.href;
+    whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${currentURL}`;
     
     // Add event listener for back button
     document.querySelector('a[href="catalog.html"]').addEventListener('click', function(e) {
