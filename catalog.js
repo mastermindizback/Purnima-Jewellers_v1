@@ -104,7 +104,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to open product page
     window.openModal = function(imagePath, category) {
-        const productURL = new URL(window.location.origin + '/product.html');
+        // Get the base URL without any parameters
+        const baseUrl = window.location.href.split('?')[0];
+        // Replace 'catalog.html' with 'product.html'
+        const productBaseUrl = baseUrl.replace('catalog.html', 'product.html');
+        // Create URL with parameters
+        const productURL = new URL(productBaseUrl);
         productURL.searchParams.set('product', encodeURIComponent(imagePath));
         productURL.searchParams.set('category', category);
         window.location.href = productURL.toString();

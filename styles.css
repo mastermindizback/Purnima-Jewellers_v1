@@ -265,9 +265,10 @@ body {
     background-color: #25D366;
     color: white;
     border-radius: 30px;
-    padding: 0.8rem 2rem;
+    padding: 0.6rem 1.5rem;
     font-weight: 500;
     transition: all 0.3s;
+    font-size: 1rem;
 }
 
 .btn-whatsapp:hover {
@@ -299,6 +300,17 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .btn-whatsapp,
+    .product-details .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-details .btn-outline-secondary {
+        margin-left: 0 !important;
+    }
     .hero h1 {
         font-size: 2.5rem;
     }
