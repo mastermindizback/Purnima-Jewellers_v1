@@ -104,13 +104,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to open product page
     window.openModal = function(imagePath, category) {
-        // First encode each part of the path
-        const encodedPath = encodeURIComponent(imagePath);
-        // Then encode it again to match the format
-        const doubleEncodedPath = encodeURIComponent(encodedPath);
+        // Replace spaces with %20 and encode it again
+        const path = imagePath.replace(/ /g, '%20');
+        const encodedPath = path.replace(/%20/g, '%252520').replace(/\//g, '%2F');
         
         // Construct the full URL with both parameters
-        const url = `https://purnimajewellers.pages.dev/product?product=${doubleEncodedPath}&category=${category}`;
+        const url = `https://purnimajewellers.pages.dev/product?product=${encodedPath}&category=${category}`;
         
         // Navigate to the product page
         window.location.href = url;
