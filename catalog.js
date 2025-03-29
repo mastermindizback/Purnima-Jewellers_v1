@@ -7,10 +7,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productPath = urlParams.get('product');
     const productCategory = urlParams.get('category');
+    
+    // Function to try opening modal
+    function tryOpenModal() {
+        if (typeof bootstrap !== 'undefined' && productPath && productCategory) {
+            const decodedPath = decodeURIComponent(productPath);
+            openModal(decodedPath, productCategory);
+        }
+    }
+
+    // Try opening modal after a short delay to ensure Bootstrap is loaded
     if (productPath && productCategory) {
-        // Decode the URL-encoded path
-        const decodedPath = decodeURIComponent(productPath);
-        setTimeout(() => openModal(decodedPath, productCategory), 500);
+        // First attempt immediately
+        tryOpenModal();
+        // Second attempt after a delay as fallback
+        setTimeout(tryOpenModal, 1000);
     }
 
     // Category mappings
@@ -93,10 +104,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Modal functionality
     window.openModal = function(imagePath, category) {
-        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        const modalElement = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         const modalTitle = document.querySelector('.modal-title');
         const whatsappBtn = document.querySelector('.btn-whatsapp');
+        
+        // Initialize modal if not already initialized
+        let modal = bootstrap.Modal.getInstance(modalElement);
+        if (!modal) {
+            modal = new bootstrap.Modal(modalElement);
+        }
         
         modalImage.src = imagePath;
         modalTitle.textContent = category;
@@ -107,6 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
         productURL.searchParams.set('category', category);
         
         whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${category.toLowerCase()} from Purnima Jewellers: ${productURL.toString()}`;
+        
+        // Show modal
         modal.show();
     };
 
