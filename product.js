@@ -32,9 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Update WhatsApp sharing link
-    // Double encode the product path to match the desired format
-    const encodedProduct = encodeURIComponent(encodeURIComponent(decodedPath));
-    const shareURL = `https://purnimajewellers.pages.dev/product?product=${encodedProduct}&category=${encodeURIComponent(productCategory)}`;
+    // Use the exact current URL to preserve the encoding
+    const shareURL = window.location.href;
     whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${shareURL}`;
     
     // Add event listener for back button

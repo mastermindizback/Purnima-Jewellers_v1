@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create URL with properly encoded parameters
         const url = new URL(baseUrl);
-        url.searchParams.set('product', imagePath);
+        url.searchParams.set('product', encodeURIComponent(encodeURIComponent(imagePath)));
         url.searchParams.set('category', category);
         
         // Navigate to the product page
