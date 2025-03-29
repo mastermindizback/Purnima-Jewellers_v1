@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'catalog.html';
     };
     
-    // Update WhatsApp sharing link
-    // Use the exact current URL to preserve the encoding
-    const shareURL = window.location.href;
+    // Create the sharing URL with proper encoding
+    const domain = 'https://purnimajewellers.pages.dev';
+    const shareURL = `${domain}/product?product=${productPath}&category=${encodeURIComponent(productCategory)}`;
     whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${shareURL}`;
     
     // Add event listener for back button
