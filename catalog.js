@@ -104,19 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to open product page
     window.openModal = function(imagePath, category) {
-        // Get the current domain
-        const domain = window.location.origin;
+        // Create the exact URL format that works
+        const encodedProduct = imagePath.split('/').map(part => encodeURIComponent(encodeURIComponent(part))).join('%2F');
+        const encodedCategory = encodeURIComponent(category);
         
-        // Create the base URL for the product page
-        const baseUrl = `${domain}/product`;
-        
-        // Create URL with properly encoded parameters
-        const url = new URL(baseUrl);
-        url.searchParams.set('product', encodeURIComponent(imagePath));
-        url.searchParams.set('category', category);
+        // Construct the full URL
+        const url = `https://purnimajewellers.pages.dev/product?product=${encodedProduct}&category=${encodedCategory}`;
         
         // Navigate to the product page
-        window.location.href = url.toString();
+        window.location.href = url;
     };
 
     // Filter functionality
