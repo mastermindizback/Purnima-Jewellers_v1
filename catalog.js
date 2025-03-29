@@ -3,6 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const whatsappNumber = '918160922048'; // WhatsApp number with country code (91 for India)
     
+    // Check for product in URL parameters when page loads
+    const urlParams = new URLSearchParams(window.location.search);
+    const productPath = urlParams.get('product');
+    const productCategory = urlParams.get('category');
+    if (productPath && productCategory) {
+        // Decode the URL-encoded path
+        const decodedPath = decodeURIComponent(productPath);
+        setTimeout(() => openModal(decodedPath, productCategory), 500);
+    }
+
     // Category mappings
     const categories = {
         'pendant-sets': {
@@ -90,7 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         modalImage.src = imagePath;
         modalTitle.textContent = category;
-        whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=I'm interested in this ${category.toLowerCase()} from Purnima Jewellers: ${imagePath}`;
+        
+        // Create shareable URL for the product
+        const productURL = new URL(window.location.href);
+        productURL.searchParams.set('product', encodeURIComponent(imagePath));
+        productURL.searchParams.set('category', category);
+        
+        whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${category.toLowerCase()} from Purnima Jewellers: ${productURL.toString()}`;
         modal.show();
     };
 
