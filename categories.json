@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "path": "PJ Jewellery Pics/AD Settings Pendant Sets",
+      "id": "pendant-sets",
+      "title": "Pendant Sets"
+    },
+    {
+      "path": "PJ Jewellery Pics/Bali and halfbali style earrings",
+      "id": "bali",
+      "title": "Bali Earrings"
+    },
+    {
+      "path": "PJ Jewellery Pics/Kundan earrings",
+      "id": "kundan",
+      "title": "Kundan Earrings"
+    },
+    {
+      "path": "PJ Jewellery Pics/Sets",
+      "id": "sets",
+      "title": "Complete Sets"
+    }
+  ]
+}

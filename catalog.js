@@ -24,25 +24,56 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(tryOpenModal, 1000);
     }
 
-    // Category mappings
-    const categories = {
-        'pendant-sets': {
-            path: 'PJ%20Jewellery%20Pics/AD%20Settings%20Pendant%20Sets',
-            title: 'Pendant Sets'
-        },
-        'bali': {
-            path: 'PJ%20Jewellery%20Pics/Bali%20and%20halfbali%20style%20earrings',
-            title: 'Bali Earrings'
-        },
-        'kundan': {
-            path: 'PJ%20Jewellery%20Pics/Kundan%20earrings',
-            title: 'Kundan Earrings'
-        },
-        'sets': {
-            path: 'PJ%20Jewellery%20Pics/Sets',
-            title: 'Complete Sets'
+    // Load categories from JSON
+    let categories = {};
+    
+    // Function to initialize categories
+    async function initializeCategories() {
+        try {
+            const response = await fetch('categories.json');
+            const data = await response.json();
+            
+            // Convert array to object format
+            categories = data.folders.reduce((acc, folder) => {
+                acc[folder.id] = {
+                    path: encodeURIComponent(folder.path),
+                    title: folder.title
+                };
+                return acc;
+            }, {});
+            
+            // Create category buttons
+            const filterContainer = document.querySelector('.filter-buttons');
+            filterContainer.innerHTML = ''; // Clear existing buttons
+            
+            // Add 'All' button
+            const allButton = document.createElement('button');
+            allButton.className = 'filter-btn active';
+            allButton.setAttribute('data-category', 'all');
+            allButton.textContent = 'All';
+            filterContainer.appendChild(allButton);
+            
+            // Add category buttons
+            data.folders.forEach(folder => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn';
+                button.setAttribute('data-category', folder.id);
+                button.textContent = folder.title;
+                filterContainer.appendChild(button);
+            });
+            
+            // Initialize filter functionality
+            initializeFilters();
+            
+            // Load initial images
+            loadImages('all');
+        } catch (error) {
+            console.error('Error loading categories:', error);
         }
-    };
+    }
+    
+    // Initialize categories when page loads
+    initializeCategories();
 
     // Function to create product card
     function createProductCard(imagePath, category) {
@@ -116,16 +147,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Filter functionality
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            loadImages(button.dataset.category);
+    function initializeFilters() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                loadImages(button.dataset.category);
+            });
         });
-    });
-
-    // Load all images initially
-    loadImages('all');
+    }
 
     // Handle hash in URL for direct category access
     const hash = window.location.hash.slice(1);
