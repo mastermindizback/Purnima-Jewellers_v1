@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productPath = urlParams.get('product');
     const productCategory = urlParams.get('category');
-    const whatsappNumber = '918160922048';
+    const whatsappNumber = '919377404477';
 
     if (!productPath || !productCategory) {
         // Redirect to catalog if no product specified
