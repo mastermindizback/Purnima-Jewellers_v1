@@ -1,6 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const productGrid = document.getElementById('product-grid');
-    const filterButtons = document.querySelectorAll('.filter-btn');
     const whatsappNumber = '919377404477'; // WhatsApp number with country code (91 for India)
     
     // Check for product in URL parameters when page loads
@@ -31,12 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
     async function initializeCategories() {
         try {
             const response = await fetch('categories.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             
             // Convert array to object format
             categories = data.folders.reduce((acc, folder) => {
                 acc[folder.id] = {
-                    path: encodeURIComponent(folder.path),
+                    path: folder.path,  // Don't encode here, encode when using
                     title: folder.title
                 };
                 return acc;
@@ -44,6 +46,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Create category buttons
             const filterContainer = document.querySelector('.filter-buttons');
+            if (!filterContainer) {
+                throw new Error('Filter buttons container not found');
+            }
+            
             filterContainer.innerHTML = ''; // Clear existing buttons
             
             // Add 'All' button
@@ -67,13 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Load initial images
             loadImages('all');
+            
+            return true; // Successfully initialized
         } catch (error) {
             console.error('Error loading categories:', error);
+            return false;
         }
     }
-    
-    // Initialize categories when page loads
-    initializeCategories();
 
     // Function to create product card
     function createProductCard(imagePath, category) {
@@ -99,6 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to load images for a category
     async function loadImages(category) {
+        if (!productGrid) {
+            console.error('Product grid not found');
+            return;
+        }
+
         productGrid.innerHTML = '';
         let imagesToLoad = [];
 
@@ -107,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.entries(categories).forEach(([key, value]) => {
                 for (let i = 1; i <= 50; i++) {
                     imagesToLoad.push({
-                        path: `${value.path}/${i}.jpeg`,
+                        path: `${encodeURIComponent(value.path)}/${i}.jpeg`,
                         category: value.title
                     });
                 }
@@ -115,9 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Load images from selected category
             const categoryInfo = categories[category];
+            if (!categoryInfo) {
+                console.error('Category not found:', category);
+                return;
+            }
             for (let i = 1; i <= 50; i++) {
                 imagesToLoad.push({
-                    path: `${categoryInfo.path}/${i}.jpeg`,
+                    path: `${encodeURIComponent(categoryInfo.path)}/${i}.jpeg`,
                     category: categoryInfo.title
                 });
             }
@@ -157,6 +172,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Initialize categories when page loads
+    await initializeCategories();
 
     // Handle hash in URL for direct category access
     const hash = window.location.hash.slice(1);
