@@ -1,5 +1,6 @@
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
+    const filterButtons = document.querySelectorAll('.filter-btn');
     const whatsappNumber = '919377404477'; // WhatsApp number with country code (91 for India)
     
     // Check for product in URL parameters when page loads
@@ -23,64 +24,25 @@ document.addEventListener('DOMContentLoaded', async function() {
         setTimeout(tryOpenModal, 1000);
     }
 
-    // Load categories from JSON
-    let categories = {};
-    
-    // Function to initialize categories
-    async function initializeCategories() {
-        try {
-            const response = await fetch('categories.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            // Convert array to object format
-            categories = data.folders.reduce((acc, folder) => {
-                acc[folder.id] = {
-                    path: folder.path,  // Don't encode here, encode when using
-                    title: folder.title
-                };
-                return acc;
-            }, {});
-            
-            // Create category buttons
-            const filterContainer = document.querySelector('.filter-buttons');
-            if (!filterContainer) {
-                throw new Error('Filter buttons container not found');
-            }
-            
-            filterContainer.innerHTML = ''; // Clear existing buttons
-            
-            // Add 'All' button
-            const allButton = document.createElement('button');
-            allButton.className = 'filter-btn active';
-            allButton.setAttribute('data-category', 'all');
-            allButton.textContent = 'All';
-            filterContainer.appendChild(allButton);
-            
-            // Add category buttons
-            data.folders.forEach(folder => {
-                const button = document.createElement('button');
-                button.className = 'filter-btn';
-                button.setAttribute('data-category', folder.id);
-                button.textContent = folder.title;
-                filterContainer.appendChild(button);
-            });
-            
-            // Initialize filter functionality
-            initializeFilters();
-            
-            // Load initial images
-            loadImages('all');
-            
-            return true; // Successfully initialized
-        } catch (error) {
-            console.error('Error loading categories:', error);
-            return false;
+    // Category mappings
+    const categories = {
+        'pendant-sets': {
+            path: 'PJ%20Jewellery%20Pics/AD%20Settings%20Pendant%20Sets',
+            title: 'Pendant Sets'
+        },
+        'bali': {
+            path: 'PJ%20Jewellery%20Pics/Bali%20and%20halfbali%20style%20earrings',
+            title: 'Bali Earrings'
+        },
+        'kundan': {
+            path: 'PJ%20Jewellery%20Pics/Kundan%20earrings',
+            title: 'Kundan Earrings'
+        },
+        'sets': {
+            path: 'PJ%20Jewellery%20Pics/Sets',
+            title: 'Complete Sets'
         }
-    }
-
+    };
     // Function to create product card
     function createProductCard(imagePath, category) {
         const col = document.createElement('div');
@@ -105,11 +67,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Function to load images for a category
     async function loadImages(category) {
-        if (!productGrid) {
-            console.error('Product grid not found');
-            return;
-        }
-
         productGrid.innerHTML = '';
         let imagesToLoad = [];
 
@@ -118,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             Object.entries(categories).forEach(([key, value]) => {
                 for (let i = 1; i <= 50; i++) {
                     imagesToLoad.push({
-                        path: `${encodeURIComponent(value.path)}/${i}.jpeg`,
+                        path: `${value.path}/${i}.jpeg`,
                         category: value.title
                     });
                 }
@@ -126,13 +83,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             // Load images from selected category
             const categoryInfo = categories[category];
-            if (!categoryInfo) {
-                console.error('Category not found:', category);
-                return;
-            }
             for (let i = 1; i <= 50; i++) {
                 imagesToLoad.push({
-                    path: `${encodeURIComponent(categoryInfo.path)}/${i}.jpeg`,
+                    path: `${categoryInfo.path}/${i}.jpeg`,
                     category: categoryInfo.title
                 });
             }
@@ -162,19 +115,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
 
     // Filter functionality
-    function initializeFilters() {
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                loadImages(button.dataset.category);
-            });
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            loadImages(button.dataset.category);
         });
-    }
+    });
 
-    // Initialize categories when page loads
-    await initializeCategories();
+    // Load all images initially
+    loadImages('all');
 
     // Handle hash in URL for direct category access
     const hash = window.location.hash.slice(1);
