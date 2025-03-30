@@ -17,11 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productCategoryTitle = document.getElementById('productCategory');
     const categoryBreadcrumb = document.getElementById('categoryBreadcrumb');
     const whatsappBtn = document.getElementById('whatsappBtn');
-    const debugShareUrl = document.getElementById('debugShareUrl');
     
-    console.log('Original path:', productPath);
-    console.log('Decoded path:', decodedPath);
-
     // Set page title
     document.title = `${productCategory} - Purnima Jewellers`;
     
@@ -40,11 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Use the original product path for sharing since it's already in the correct format
     const shareURL = `https://purnimajewellers.pages.dev/product?product=${productPath}&category=${productCategory}`;
     
-    // Update WhatsApp button and debug info
-    // Encode the entire shareURL to prevent WhatsApp from decoding it
+    // Update WhatsApp button
     const encodedShareURL = encodeURIComponent(shareURL);
     whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${encodedShareURL}`;
-    debugShareUrl.textContent = shareURL;
     
     // Add event listener for back button
     document.querySelector('a[href="catalog.html"]').addEventListener('click', function(e) {
