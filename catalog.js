@@ -26,21 +26,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Category mappings
     const categories = {
-        'pendant-sets': {
-            path: 'PJ%20Jewellery%20Pics/AD%20Settings%20Pendant%20Sets',
-            title: 'Pendant Sets'
+        'antitarnish': {
+            path: 'PJ%20Jewellery%20Pics/Antitarnish%20Jewellery',
+            title: 'Antitarnish Jewellery'
         },
         'bali': {
             path: 'PJ%20Jewellery%20Pics/Bali%20and%20halfbali%20style%20earrings',
             title: 'Bali Earrings'
         },
+        'bangles': {
+            path: 'PJ%20Jewellery%20Pics/Bangles',
+            title: 'Bangles'
+        },
+        'bracelets': {
+            path: 'PJ%20Jewellery%20Pics/Bracelets',
+            title: 'Bracelets'
+        },
+        'delicate-pendant': {
+            path: 'PJ%20Jewellery%20Pics/Delicate%20Pendant%20Sets',
+            title: 'Delicate Pendant Sets'
+        },
+        'kundan-heavy': {
+            path: 'PJ%20Jewellery%20Pics/Kundan%20Heavy%20Sets',
+            title: 'Kundan Heavy Sets'
+        },
         'kundan': {
             path: 'PJ%20Jewellery%20Pics/Kundan%20earrings',
             title: 'Kundan Earrings'
         },
+        'ring-nath': {
+            path: 'PJ%20Jewellery%20Pics/RingNath',
+            title: 'Ring & Nath'
+        },
         'sets': {
             path: 'PJ%20Jewellery%20Pics/Sets',
             title: 'Complete Sets'
+        },
+        'silver': {
+            path: 'PJ%20Jewellery%20Pics/Silver%20Replicas',
+            title: 'Silver Replicas'
+        },
+        'studs': {
+            path: 'PJ%20Jewellery%20Pics/Studs',
+            title: 'Studs'
+        },
+        'temple': {
+            path: 'PJ%20Jewellery%20Pics/Temple%20Jewellery',
+            title: 'Temple Jewellery'
         }
     };
     // Function to create product card
