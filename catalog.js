@@ -75,6 +75,43 @@ document.addEventListener('DOMContentLoaded', function() {
             title: 'Temple Jewellery'
         }
     };
+    // Function to disable/enable category buttons
+    function setButtonsEnabled(enabled) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(button => {
+            button.disabled = !enabled;
+            if (!enabled) {
+                button.style.opacity = '0.6';
+                button.style.cursor = 'not-allowed';
+            } else {
+                button.style.opacity = '';
+                button.style.cursor = '';
+            }
+        });
+    }
+
+    // Function to update loading progress
+    function updateLoadingProgress(loaded, total) {
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const progressText = loadingIndicator.querySelector('.loading-progress');
+        const loadingText = loadingIndicator.querySelector('.loading-text');
+        
+        if (loaded === 0) {
+            loadingIndicator.style.display = 'block';
+            setButtonsEnabled(false);
+        }
+        
+        progressText.textContent = `Loaded ${loaded} of ${total} products`;
+        loadingText.textContent = `Loading ${category === 'all' ? 'all categories' : categories[category].title}...`;
+        
+        if (loaded === total) {
+            setTimeout(() => {
+                loadingIndicator.style.display = 'none';
+                setButtonsEnabled(true);
+            }, 500); // Short delay to show completion
+        }
+    }
+
     // Function to create product card
     function createProductCard(imagePath, category) {
         const col = document.createElement('div');
@@ -101,13 +138,14 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadImages(category) {
         productGrid.innerHTML = '';
         let imagesToLoad = [];
+        let loadedCount = 0;
 
         if (category === 'all') {
             // Load images from all categories
             Object.entries(categories).forEach(([key, value]) => {
                 for (let i = 1; i <= 50; i++) {
                     imagesToLoad.push({
-                        path: `${value.path}/${i}.jpeg`,
+                        path: `${encodeURIComponent(value.path)}/${i}.jpeg`,
                         category: value.title
                     });
                 }
@@ -115,19 +153,32 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Load images from selected category
             const categoryInfo = categories[category];
+            if (!categoryInfo) {
+                console.error('Category not found:', category);
+                return;
+            }
             for (let i = 1; i <= 50; i++) {
                 imagesToLoad.push({
-                    path: `${categoryInfo.path}/${i}.jpeg`,
+                    path: `${encodeURIComponent(categoryInfo.path)}/${i}.jpeg`,
                     category: categoryInfo.title
                 });
             }
         }
+
+        // Initialize loading state
+        updateLoadingProgress(0, imagesToLoad.length);
 
         // Load images and handle missing ones
         imagesToLoad.forEach(img => {
             const image = new Image();
             image.onload = () => {
                 productGrid.appendChild(createProductCard(img.path, img.category));
+                loadedCount++;
+                updateLoadingProgress(loadedCount, imagesToLoad.length);
+            };
+            image.onerror = () => {
+                loadedCount++;
+                updateLoadingProgress(loadedCount, imagesToLoad.length);
             };
             image.src = img.path;
         });
