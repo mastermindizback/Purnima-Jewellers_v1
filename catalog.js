@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to update loading progress
-    function updateLoadingProgress(loaded, total) {
+    function updateLoadingProgress(loaded, total, currentCategory) {
         const loadingIndicator = document.getElementById('loading-indicator');
         const progressText = loadingIndicator.querySelector('.loading-progress');
         const loadingText = loadingIndicator.querySelector('.loading-text');
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         progressText.textContent = `Loaded ${loaded} of ${total} products`;
-        loadingText.textContent = `Loading ${category === 'all' ? 'all categories' : categories[category].title}...`;
+        loadingText.textContent = `Loading ${currentCategory === 'all' ? 'all categories' : categories[currentCategory].title}...`;
         
         if (loaded === total) {
             setTimeout(() => {
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Initialize loading state
-        updateLoadingProgress(0, imagesToLoad.length);
+        updateLoadingProgress(0, imagesToLoad.length, category);
 
         // Load images and handle missing ones
         imagesToLoad.forEach(img => {
@@ -174,11 +174,11 @@ document.addEventListener('DOMContentLoaded', function() {
             image.onload = () => {
                 productGrid.appendChild(createProductCard(img.path, img.category));
                 loadedCount++;
-                updateLoadingProgress(loadedCount, imagesToLoad.length);
+                updateLoadingProgress(loadedCount, imagesToLoad.length, category);
             };
             image.onerror = () => {
                 loadedCount++;
-                updateLoadingProgress(loadedCount, imagesToLoad.length);
+                updateLoadingProgress(loadedCount, imagesToLoad.length, category);
             };
             image.src = img.path;
         });
