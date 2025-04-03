@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.entries(categories).forEach(([key, value]) => {
                 for (let i = 1; i <= 50; i++) {
                     imagesToLoad.push({
-                        path: `${encodeURIComponent(value.path)}/${i}.jpeg`,
+                        path: `${value.path}/${i}.jpeg`,
                         category: value.title
                     });
                 }
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             for (let i = 1; i <= 50; i++) {
                 imagesToLoad.push({
-                    path: `${encodeURIComponent(categoryInfo.path)}/${i}.jpeg`,
+                    path: `${categoryInfo.path}/${i}.jpeg`,
                     category: categoryInfo.title
                 });
             }
