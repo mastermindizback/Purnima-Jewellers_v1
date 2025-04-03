@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
     const filterButtons = document.querySelectorAll('.filter-btn');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const PRODUCTS_PER_PAGE = 12;
+    let currentPage = 1;
+    let currentImages = [];
     const whatsappNumber = '919377404477'; // WhatsApp number with country code (91 for India)
     
     // Check for product in URL parameters when page loads
@@ -134,9 +139,33 @@ document.addEventListener('DOMContentLoaded', function() {
         return col;
     }
 
+    // Function to load more products
+    function loadMoreProducts() {
+        const startIdx = (currentPage - 1) * PRODUCTS_PER_PAGE;
+        const endIdx = Math.min(startIdx + PRODUCTS_PER_PAGE, currentImages.length);
+        const batch = currentImages.slice(startIdx, endIdx);
+
+        batch.forEach(img => {
+            const image = new Image();
+            image.onload = () => {
+                productGrid.appendChild(createProductCard(img.path, img.category));
+            };
+            image.onerror = () => {}; // Skip errors silently for pagination
+            image.src = img.path;
+        });
+
+        currentPage++;
+        loadMoreBtn.disabled = endIdx >= currentImages.length;
+        if (loadMoreBtn.disabled) {
+            loadMoreContainer.style.display = 'none';
+        }
+    }
+
     // Function to load images for a category
     async function loadImages(category) {
         productGrid.innerHTML = '';
+        currentPage = 1;
+        currentImages = [];
         let imagesToLoad = [];
         let loadedCount = 0;
 
@@ -168,20 +197,34 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize loading state
         updateLoadingProgress(0, imagesToLoad.length, category);
 
-        // Load images and handle missing ones
-        imagesToLoad.forEach(img => {
-            const image = new Image();
-            image.onload = () => {
-                productGrid.appendChild(createProductCard(img.path, img.category));
-                loadedCount++;
-                updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-            };
-            image.onerror = () => {
-                loadedCount++;
-                updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-            };
-            image.src = img.path;
+        // Preload all images first
+        const preloadPromises = imagesToLoad.map(img => {
+            return new Promise((resolve) => {
+                const image = new Image();
+                image.onload = () => {
+                    currentImages.push(img);
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                    resolve();
+                };
+                image.onerror = () => {
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                    resolve();
+                };
+                image.src = img.path;
+            });
         });
+
+        // Wait for all images to preload
+        await Promise.all(preloadPromises);
+
+        // Show load more button if there are more images
+        loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
+        loadMoreBtn.disabled = false;
+
+        // Load first batch
+        loadMoreProducts();
     }
 
     // Function to open product page
@@ -196,6 +239,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Navigate to the product page
         window.location.href = url;
     };
+
+    // Load more button click handler
+    loadMoreBtn.addEventListener('click', loadMoreProducts);
 
     // Filter functionality
     filterButtons.forEach(button => {
