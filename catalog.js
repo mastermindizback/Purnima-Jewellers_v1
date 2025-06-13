@@ -162,70 +162,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to load images for a category
-    async function loadImages(category) {
+    async function loadImages(categoryKey) {
         productGrid.innerHTML = '';
         currentPage = 1;
         currentImages = [];
-        let imagesToLoad = [];
-        let loadedCount = 0;
-
-        if (category === 'all') {
-            // Load images from all categories
-            Object.entries(categories).forEach(([key, value]) => {
-                for (let i = 1; i <= 50; i++) {
-                    imagesToLoad.push({
-                        path: `${value.path}/${i}.jpeg`,
-                        category: value.title
-                    });
-                }
-            });
-        } else {
-            // Load images from selected category
-            const categoryInfo = categories[category];
-            if (!categoryInfo) {
-                console.error('Category not found:', category);
-                return;
-            }
-            for (let i = 1; i <= 50; i++) {
-                imagesToLoad.push({
-                    path: `${categoryInfo.path}/${i}.jpeg`,
-                    category: categoryInfo.title
-                });
-            }
+      
+        // 1) Fetch the real list from the server
+        const resp = await fetch(`/api/images/${categoryKey}`);
+        if (!resp.ok) {
+          console.error("Failed to load images for", categoryKey);
+          return;
         }
-
-        // Initialize loading state
-        updateLoadingProgress(0, imagesToLoad.length, category);
-
-        // Preload all images first
-        const preloadPromises = imagesToLoad.map(img => {
-            return new Promise((resolve) => {
-                const image = new Image();
-                image.onload = () => {
-                    currentImages.push(img);
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                    resolve();
-                };
-                image.onerror = () => {
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                    resolve();
-                };
-                image.src = img.path;
-            });
-        });
-
-        // Wait for all images to preload
-        await Promise.all(preloadPromises);
-
-        // Show load more button if there are more images
-        loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
+        const images = await resp.json(); 
+        // images is an array of { url, category }
+      
+        // 2) Initialize loading UI
+        updateLoadingProgress(0, images.length, categoryKey);
+      
+        // 3) Preload & collect
+        let loadedCount = 0;
+        const loadPromises = images.map(img =>
+          new Promise(resolve => {
+            const image = new Image();
+            image.onload = image.onerror = () => {
+              loadedCount++;
+              updateLoadingProgress(loadedCount, images.length, categoryKey);
+              currentImages.push(img);
+              resolve();
+            };
+            image.src = img.url;
+          })
+        );
+        await Promise.all(loadPromises);
+      
+        // 4) Show “load more” if needed
+        loadMoreContainer.style.display =
+          currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
-
-        // Load first batch
+      
+        // 5) Render first batch
         loadMoreProducts();
     }
+      
 
     // Function to open product page
     window.openModal = function(imagePath, category) {
