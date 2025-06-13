@@ -166,41 +166,66 @@ document.addEventListener('DOMContentLoaded', function() {
         productGrid.innerHTML = '';
         currentPage = 1;
         currentImages = [];
-      
-        // 1. Grab the manifest
-        const resp = await fetch('/images.json');
-        if (!resp.ok) throw new Error('Could not load image manifest');
-        const manifest = await resp.json();
-      
-        // 2. Build full paths + titles
-        const files = manifest[category] || [];
-        currentImages = files.map(filename => ({
-          path: `${categories[category].path}/${filename}`,
-          category: categories[category].title
-        }));
-      
-        // 3. Progress indicator can use loadedCount/total = files.length
-        updateLoadingProgress(0, currentImages.length, category);
-      
-        // 4. Preload
+        let imagesToLoad = [];
         let loadedCount = 0;
-        await Promise.all(currentImages.map(img => new Promise(res => {
-          const image = new Image();
-          image.onload = image.onerror = () => {
-            loadedCount++;
-            updateLoadingProgress(loadedCount, currentImages.length, category);
-            res();
-          };
-          image.src = img.path;
-        })));
-      
-        // 5. Show/hide load-more and render first page
+
+        if (category === 'all') {
+            // Load images from all categories
+            Object.entries(categories).forEach(([key, value]) => {
+                for (let i = 1; i <= 50; i++) {
+                    imagesToLoad.push({
+                        path: `${value.path}/${i}.jpeg`,
+                        category: value.title
+                    });
+                }
+            });
+        } else {
+            // Load images from selected category
+            const categoryInfo = categories[category];
+            if (!categoryInfo) {
+                console.error('Category not found:', category);
+                return;
+            }
+            for (let i = 1; i <= 50; i++) {
+                imagesToLoad.push({
+                    path: `${categoryInfo.path}/${i}.jpeg`,
+                    category: categoryInfo.title
+                });
+            }
+        }
+
+        // Initialize loading state
+        updateLoadingProgress(0, imagesToLoad.length, category);
+
+        // Preload all images first
+        const preloadPromises = imagesToLoad.map(img => {
+            return new Promise((resolve) => {
+                const image = new Image();
+                image.onload = () => {
+                    currentImages.push(img);
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                    resolve();
+                };
+                image.onerror = () => {
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                    resolve();
+                };
+                image.src = img.path;
+            });
+        });
+
+        // Wait for all images to preload
+        await Promise.all(preloadPromises);
+
+        // Show load more button if there are more images
         loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
+
+        // Load first batch
         loadMoreProducts();
-      }
-      
-      
+    }
 
     // Function to open product page
     window.openModal = function(imagePath, category) {
