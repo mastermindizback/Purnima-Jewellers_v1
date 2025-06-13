@@ -162,47 +162,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to load images for a category
-    async function loadImages(categoryKey) {
+    async function loadImages(category) {
         productGrid.innerHTML = '';
         currentPage = 1;
         currentImages = [];
       
-        // 1) Fetch the real list from the server
-        const resp = await fetch(`/api/images/${categoryKey}`);
-        if (!resp.ok) {
-          console.error("Failed to load images for", categoryKey);
-          return;
-        }
-        const images = await resp.json(); 
-        // images is an array of { url, category }
+        // 1. Grab the manifest
+        const resp = await fetch('/images.json');
+        if (!resp.ok) throw new Error('Could not load image manifest');
+        const manifest = await resp.json();
       
-        // 2) Initialize loading UI
-        updateLoadingProgress(0, images.length, categoryKey);
+        // 2. Build full paths + titles
+        const files = manifest[category] || [];
+        currentImages = files.map(filename => ({
+          path: `${categories[category].path}/${filename}`,
+          category: categories[category].title
+        }));
       
-        // 3) Preload & collect
+        // 3. Progress indicator can use loadedCount/total = files.length
+        updateLoadingProgress(0, currentImages.length, category);
+      
+        // 4. Preload
         let loadedCount = 0;
-        const loadPromises = images.map(img =>
-          new Promise(resolve => {
-            const image = new Image();
-            image.onload = image.onerror = () => {
-              loadedCount++;
-              updateLoadingProgress(loadedCount, images.length, categoryKey);
-              currentImages.push(img);
-              resolve();
-            };
-            image.src = img.url;
-          })
-        );
-        await Promise.all(loadPromises);
+        await Promise.all(currentImages.map(img => new Promise(res => {
+          const image = new Image();
+          image.onload = image.onerror = () => {
+            loadedCount++;
+            updateLoadingProgress(loadedCount, currentImages.length, category);
+            res();
+          };
+          image.src = img.path;
+        })));
       
-        // 4) Show “load more” if needed
-        loadMoreContainer.style.display =
-          currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
+        // 5. Show/hide load-more and render first page
+        loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
-      
-        // 5) Render first batch
         loadMoreProducts();
-    }
+      }
+      
       
 
     // Function to open product page
