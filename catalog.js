@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setButtonsEnabled(false);
         }
         
-        progressText.textContent = `Loaded ${loaded} of ${total} products`;
+        progressText.textContent = `Loading ${loaded} products`;
         loadingText.textContent = `Loading ${currentCategory === 'all' ? 'all categories' : categories[currentCategory].title}...`;
         
         if (loaded === total) {
