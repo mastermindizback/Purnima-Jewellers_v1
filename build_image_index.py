@@ -8,13 +8,14 @@ Usage: python build_image_index.py
 import os
 import json
 import re
+import shutil
 from pathlib import Path
 
 # Configuration
 IMAGE_DIRECTORY = './PJ Jewellery Pics'
 OUTPUT_FILE = './images-index.json'
 
-# Category mappings (same as in your JS file)
+# Category mappings
 CATEGORY_MAPPINGS = {
     'Antitarnish Jewellery': 'antitarnish',
     'Bali and halfbali style earrings': 'bali',
@@ -45,22 +46,59 @@ def sort_files_numerically(files):
     
     return sorted(files, key=extract_number)
 
+def rename_to_numeric(category_path):
+    """Rename all non-numeric image files in a category to numeric format."""
+    # Get all image files
+    image_files = [
+        f for f in category_path.iterdir()
+        if f.is_file() and is_image_file(f.name)
+    ]
+    
+    # Find max existing number and collect non-numeric files
+    max_num = 0
+    non_numeric_files = []
+    
+    for file in image_files:
+        # Extract numeric part from filename
+        match = re.search(r'^(\d+)', file.stem)
+        if match:
+            file_num = int(match.group())
+            max_num = max(max_num, file_num)
+        else:
+            non_numeric_files.append(file)
+    
+    # Rename non-numeric files starting from max_num + 1
+    renamed_count = 0
+    for i, file in enumerate(non_numeric_files, start=max_num + 1):
+        new_name = f"{i}{file.suffix}"
+        new_path = file.with_name(new_name)
+        
+        # Ensure we don't overwrite existing files
+        if not new_path.exists():
+            file.rename(new_path)
+            renamed_count += 1
+            print(f"Renamed {file.name} -> {new_name}")
+        else:
+            print(f"Warning: Skipped {file.name} (target exists: {new_name})")
+    
+    return renamed_count
+
 def generate_image_index():
     """Generate the image index JSON file."""
     image_index = {}
+    total_renamed = 0
     
     try:
-        # Check if the main directory exists
+        # Check if main directory exists
         image_dir_path = Path(IMAGE_DIRECTORY)
         if not image_dir_path.exists():
             print(f"Directory not found: {IMAGE_DIRECTORY}")
             return
         
-        # Get all subdirectories
+        # Process each category
         categories = [d.name for d in image_dir_path.iterdir() if d.is_dir()]
         print(f"Found categories: {categories}")
         
-        # Process each category
         for category in categories:
             category_path = image_dir_path / category
             category_key = CATEGORY_MAPPINGS.get(category)
@@ -69,39 +107,38 @@ def generate_image_index():
                 print(f"Warning: No mapping found for category: {category}")
                 continue
             
-            try:
-                # Get all image files in the category directory
-                files = [
-                    f.name for f in category_path.iterdir()
-                    if f.is_file() and is_image_file(f.name)
-                ]
-                
-                # Sort files numerically
-                files = sort_files_numerically(files)
-                
-                image_index[category_key] = files
-                print(f"{category_key}: {len(files)} images found")
-                
-            except Exception as error:
-                print(f"Error reading category {category}: {error}")
+            # Rename non-numeric files in this category
+            renamed = rename_to_numeric(category_path)
+            total_renamed += renamed
+            print(f"Renamed {renamed} files in {category}")
+            
+            # Get image files after renaming
+            files = [
+                f.name for f in category_path.iterdir()
+                if f.is_file() and is_image_file(f.name)
+            ]
+            
+            # Sort files numerically
+            files = sort_files_numerically(files)
+            image_index[category_key] = files
+            print(f"{category_key}: {len(files)} images")
         
         # Write the index file
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             json.dump(image_index, f, indent=2, ensure_ascii=False)
         
-        print(f"\nImage index generated successfully: {OUTPUT_FILE}")
-        print(f"Total categories processed: {len(image_index)}")
+        print(f"\nImage index generated: {OUTPUT_FILE}")
+        print(f"Total categories: {len(image_index)}")
+        print(f"Total files renamed: {total_renamed}")
         
         # Print summary
-        total_images = 0
+        total_images = sum(len(images) for images in image_index.values())
         for category, images in image_index.items():
-            total_images += len(images)
             print(f"  {category}: {len(images)} images")
-        
         print(f"Total images: {total_images}")
         
     except Exception as error:
-        print(f"Error generating image index: {error}")
+        print(f"Error: {error}")
 
 if __name__ == '__main__':
     generate_image_index()
