@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (category === 'all') {
             // Load images from all categories
             Object.entries(categories).forEach(([key, value]) => {
-                for (let i = 1; i <= 200; i++) {
+                for (let i = 1; i <= 10; i++) {
                     imagesToLoad.push({
                         path: `${value.path}/${i}.jpeg`,
                         category: value.title
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Category not found:', category);
                 return;
             }
-            for (let i = 1; i <= 200; i++) {
+            for (let i = 1; i <= 10; i++) {
                 imagesToLoad.push({
                     path: `${categoryInfo.path}/${i}.jpeg`,
                     category: categoryInfo.title
