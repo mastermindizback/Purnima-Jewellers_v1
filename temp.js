@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -7,9 +6,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const PRODUCTS_PER_PAGE = 12;
     let currentPage = 1;
     let currentImages = [];
-    let imageIndex = {};
-    const whatsappNumber = '919377404477';
+    const whatsappNumber = '919377404477'; // WhatsApp number with country code (91 for India)
     
+    // Check for product in URL parameters when page loads
+    const urlParams = new URLSearchParams(window.location.search);
+    const productPath = urlParams.get('product');
+    const productCategory = urlParams.get('category');
+    
+    // Function to try opening modal
+    function tryOpenModal() {
+        if (typeof bootstrap !== 'undefined' && productPath && productCategory) {
+            const decodedPath = decodeURIComponent(productPath);
+            openModal(decodedPath, productCategory);
+        }
+    }
+
+    // Try opening modal after a short delay to ensure Bootstrap is loaded
+    if (productPath && productCategory) {
+        // First attempt immediately
+        tryOpenModal();
+        // Second attempt after a delay as fallback
+        setTimeout(tryOpenModal, 1000);
+    }
+
     // Category mappings
     const categories = {
         'antitarnish': {
@@ -61,53 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: 'Temple Jewellery'
         }
     };
-
-    // Load image index from JSON file
-    async function loadImageIndex() {
-        try {
-            const response = await fetch('images-index.json');
-            if (!response.ok) {
-                throw new Error('Failed to load image index');
-            }
-            imageIndex = await response.json();
-            console.log('Image index loaded:', imageIndex);
-        } catch (error) {
-            console.error('Error loading image index:', error);
-            // Fallback to the old method if index file doesn't exist
-            console.log('Falling back to default image loading method');
-            imageIndex = generateFallbackIndex();
-        }
-    }
-
-    // Fallback method - generates default numbered images (1-10 for each category)
-    function generateFallbackIndex() {
-        const fallbackIndex = {};
-        Object.keys(categories).forEach(category => {
-            fallbackIndex[category] = [];
-            for (let i = 1; i <= 10; i++) {
-                fallbackIndex[category].push(`${i}.jpeg`);
-            }
-        });
-        return fallbackIndex;
-    }
-
-    // Check for product in URL parameters when page loads
-    const urlParams = new URLSearchParams(window.location.search);
-    const productPath = urlParams.get('product');
-    const productCategory = urlParams.get('category');
-    
-    function tryOpenModal() {
-        if (typeof bootstrap !== 'undefined' && productPath && productCategory) {
-            const decodedPath = decodeURIComponent(productPath);
-            openModal(decodedPath, productCategory);
-        }
-    }
-
-    if (productPath && productCategory) {
-        tryOpenModal();
-        setTimeout(tryOpenModal, 1000);
-    }
-
+    // Function to disable/enable category buttons
     function setButtonsEnabled(enabled) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(button => {
@@ -122,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to update loading progress
     function updateLoadingProgress(loaded, total, currentCategory) {
         const loadingIndicator = document.getElementById('loading-indicator');
         const progressText = loadingIndicator.querySelector('.loading-progress');
@@ -139,10 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loadingIndicator.style.display = 'none';
                 setButtonsEnabled(true);
-            }, 500);
+            }, 500); // Short delay to show completion
         }
     }
 
+    // Function to create product card
     function createProductCard(imagePath, category) {
         const col = document.createElement('div');
         col.className = 'col-6 col-md-4 col-lg-3 mb-4';
@@ -164,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return col;
     }
 
+    // Function to load more products
     function loadMoreProducts() {
         const startIdx = (currentPage - 1) * PRODUCTS_PER_PAGE;
         const endIdx = Math.min(startIdx + PRODUCTS_PER_PAGE, currentImages.length);
@@ -174,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             image.onload = () => {
                 productGrid.appendChild(createProductCard(img.path, img.category));
             };
-            image.onerror = () => {};
+            image.onerror = () => {}; // Skip errors silently for pagination
             image.src = img.path;
         });
 
@@ -185,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Updated function to load images dynamically from index
+    // Function to load images for a category
     async function loadImages(category) {
         productGrid.innerHTML = '';
         currentPage = 1;
@@ -196,13 +172,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (category === 'all') {
             // Load images from all categories
             Object.entries(categories).forEach(([key, value]) => {
-                const categoryImages = imageIndex[key] || [];
-                categoryImages.forEach(filename => {
+                for (let i = 1; i <= 10; i++) {
                     imagesToLoad.push({
-                        path: `${value.path}/${filename}`,
+                        path: `${value.path}/${i}.jpeg`,
                         category: value.title
                     });
-                });
+                }
             });
         } else {
             // Load images from selected category
@@ -211,23 +186,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Category not found:', category);
                 return;
             }
-            
-            const categoryImages = imageIndex[category] || [];
-            categoryImages.forEach(filename => {
+            for (let i = 1; i <= 10; i++) {
                 imagesToLoad.push({
-                    path: `${categoryInfo.path}/${filename}`,
+                    path: `${categoryInfo.path}/${i}.jpeg`,
                     category: categoryInfo.title
                 });
-            });
+            }
         }
 
-        if (imagesToLoad.length === 0) {
-            console.log('No images found for category:', category);
-            return;
-        }
-
+        // Initialize loading state
         updateLoadingProgress(0, imagesToLoad.length, category);
 
+        // Preload all images first
         const preloadPromises = imagesToLoad.map(img => {
             return new Promise((resolve) => {
                 const image = new Image();
@@ -238,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     resolve();
                 };
                 image.onerror = () => {
-                    console.log('Failed to load image:', img.path);
                     loadedCount++;
                     updateLoadingProgress(loadedCount, imagesToLoad.length, category);
                     resolve();
@@ -247,23 +216,34 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        // Wait for all images to preload
         await Promise.all(preloadPromises);
 
+        // Show load more button if there are more images
         loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
 
+        // Load first batch
         loadMoreProducts();
     }
 
+    // Function to open product page
     window.openModal = function(imagePath, category) {
+        // Replace spaces with %20 and encode it again
         const path = imagePath.replace(/ /g, '%20');
         const encodedPath = path.replace(/%20/g, '%252520').replace(/\//g, '%2F');
+        
+        // Construct the full URL with both parameters
         const url = `https://purnimajewellers.pages.dev/product?product=${encodedPath}&category=${category}`;
+        
+        // Navigate to the product page
         window.location.href = url;
     };
 
+    // Load more button click handler
     loadMoreBtn.addEventListener('click', loadMoreProducts);
 
+    // Filter functionality
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
@@ -272,20 +252,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Initialize the application
-    async function init() {
-        await loadImageIndex();
-        loadImages('all');
+    // Load all images initially
+    loadImages('all');
 
-        // Handle hash in URL for direct category access
-        const hash = window.location.hash.slice(1);
-        if (hash && categories[hash]) {
-            const button = document.querySelector(`[data-category="${hash}"]`);
-            if (button) {
-                button.click();
-            }
+    // Handle hash in URL for direct category access
+    const hash = window.location.hash.slice(1);
+    if (hash && categories[hash]) {
+        const button = document.querySelector(`[data-category="${hash}"]`);
+        if (button) {
+            button.click();
         }
     }
-
-    init();
 });
