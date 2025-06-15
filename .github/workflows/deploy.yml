@@ -3,7 +3,10 @@ name: Run Script and Deploy to Cloudflare Pages
 on:
   push:
     branches: [ master ] # or whatever your default branch is
-
+    
+permissions:
+  contents: write
+  
 jobs:
   run-script-and-deploy:
     runs-on: ubuntu-latest
