@@ -1,0 +1,37 @@
+name: Run Script and Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [ master ] # or whatever your default branch is
+
+jobs:
+  run-script-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9' # specify your Python version
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Add any pip install commands for your script dependencies
+        pip install -r requirements.txt
+    
+    - name: Run your script
+      run: |
+        python build_image_index.py # replace with your actual script name
+    
+    - name: Deploy to Cloudflare Pages
+      if: success() # only deploy if the script ran successfully
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: purnimajewellers # replace with your actual project name
+        directory: . # or whatever directory contains your built files
