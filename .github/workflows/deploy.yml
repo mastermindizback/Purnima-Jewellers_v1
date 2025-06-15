@@ -26,6 +26,14 @@ jobs:
     - name: Run your script
       run: |
         python build_image_index.py # replace with your actual script name
+        
+    - name: Commit renamed files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Auto-rename image files" || exit 0
+        git push
     
     - name: Deploy to Cloudflare Pages
       if: success() # only deploy if the script ran successfully
