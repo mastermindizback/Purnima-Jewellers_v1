@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('product-grid');
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -9,71 +8,158 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentImages = [];
     let imageIndex = {};
     const whatsappNumber = '919377404477';
-    
+
+    // GitHub API configuration - replace with your actual values
+    const GITHUB_API_BASE = 'https://api.github.com/repos/your-username/mastermindizback/Purnima-Jewellers_v1/contents';
+    const GITHUB_TOKEN = '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'; // Optional, for higher rate limits
+
+    // Cache for loaded images to avoid re-fetching
+    const imageCache = new Map();
+
     // Category mappings
     const categories = {
         'antitarnish': {
-            path: 'PJ%20Jewellery%20Pics/Antitarnish%20Jewellery',
+            path: 'PJ Jewellery Pics/Antitarnish Jewellery',
             title: 'Antitarnish Jewellery'
         },
         'bali': {
-            path: 'PJ%20Jewellery%20Pics/Bali%20and%20halfbali%20style%20earrings',
+            path: 'PJ Jewellery Pics/Bali and halfbali style earrings',
             title: 'Bali Earrings'
         },
         'bangles': {
-            path: 'PJ%20Jewellery%20Pics/Bangles',
+            path: 'PJ Jewellery Pics/Bangles',
             title: 'Bangles'
         },
         'bracelets': {
-            path: 'PJ%20Jewellery%20Pics/Bracelets',
+            path: 'PJ Jewellery Pics/Bracelets',
             title: 'Bracelets'
         },
         'delicate-pendant': {
-            path: 'PJ%20Jewellery%20Pics/Delicate%20Pendant%20Sets',
+            path: 'PJ Jewellery Pics/Delicate Pendant Sets',
             title: 'Delicate Pendant Sets'
         },
         'kundan-heavy': {
-            path: 'PJ%20Jewellery%20Pics/Kundan%20Heavy%20Sets',
+            path: 'PJ Jewellery Pics/Kundan Heavy Sets',
             title: 'Kundan Heavy Sets'
         },
         'kundan': {
-            path: 'PJ%20Jewellery%20Pics/Kundan%20earrings',
+            path: 'PJ Jewellery Pics/Kundan earrings',
             title: 'Kundan Earrings'
         },
         'ring-nath': {
-            path: 'PJ%20Jewellery%20Pics/RingNath',
+            path: 'PJ Jewellery Pics/RingNath',
             title: 'Ring & Nath'
         },
         'sets': {
-            path: 'PJ%20Jewellery%20Pics/Sets',
+            path: 'PJ Jewellery Pics/Sets',
             title: 'Complete Sets'
         },
         'silver': {
-            path: 'PJ%20Jewellery%20Pics/Silver%20Replicas',
+            path: 'PJ Jewellery Pics/Silver Replicas',
             title: 'Silver Replicas'
         },
         'studs': {
-            path: 'PJ%20Jewellery%20Pics/Studs',
+            path: 'PJ Jewellery Pics/Studs',
             title: 'Studs'
         },
         'temple': {
-            path: 'PJ%20Jewellery%20Pics/Temple%20Jewellery',
+            path: 'PJ Jewellery Pics/Temple Jewellery',
             title: 'Temple Jewellery'
         }
     };
 
-    // Load image index from JSON file
+    // Function to fetch binary content from GitHub API and convert to blob URL
+    async function fetchImageFromGitHub(filePath) {
+        // Check cache first
+        if (imageCache.has(filePath)) {
+            return imageCache.get(filePath);
+        }
+
+        try {
+            const headers = {
+                'Accept': 'application/vnd.github.v3+json'
+            };
+
+            // Add authorization header if token is provided
+            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
+                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+            }
+
+            const response = await fetch(`${GITHUB_API_BASE}/${encodeURIComponent(filePath)}`, {
+                headers: headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // GitHub API returns base64 encoded content for binary files
+            if (data.content && data.encoding === 'base64') {
+                // Convert base64 to binary
+                const binaryString = atob(data.content);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+
+                // Create blob and object URL
+                const blob = new Blob([bytes], { type: 'image/jpeg' });
+                const objectURL = URL.createObjectURL(blob);
+
+                // Cache the result
+                imageCache.set(filePath, objectURL);
+
+                return objectURL;
+            } else {
+                throw new Error('Invalid content format from GitHub API');
+            }
+        } catch (error) {
+            console.error('Error fetching image from GitHub:', error);
+            return null;
+        }
+    }
+
+    // Load image index from JSON file (also from GitHub API)
     async function loadImageIndex() {
         try {
-            const response = await fetch('images-index.json');
+            const headers = {
+                'Accept': 'application/vnd.github.v3+json'
+            };
+
+            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
+                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+            }
+
+            const response = await fetch(`${GITHUB_API_BASE}/images-index.json`, {
+                headers: headers
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to load image index');
             }
-            imageIndex = await response.json();
-            console.log('Image index loaded:', imageIndex);
+
+            const data = await response.json();
+
+            if (data.content) {
+                let jsonString;
+
+                if (data.encoding === 'base64') {
+                    // Handle base64 encoded content (binary upload)
+                    jsonString = atob(data.content);
+                } else {
+                    // Handle plain text content (text upload)
+                    jsonString = data.content;
+                }
+
+                imageIndex = JSON.parse(jsonString);
+                console.log('Image index loaded:', imageIndex);
+            } else {
+                throw new Error('Invalid image index format');
+            }
         } catch (error) {
             console.error('Error loading image index:', error);
-            // Fallback to the old method if index file doesn't exist
             console.log('Falling back to default image loading method');
             imageIndex = generateFallbackIndex();
         }
@@ -95,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productPath = urlParams.get('product');
     const productCategory = urlParams.get('category');
-    
+
     function tryOpenModal() {
         if (typeof bootstrap !== 'undefined' && productPath && productCategory) {
             const decodedPath = decodeURIComponent(productPath);
@@ -126,15 +212,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const loadingIndicator = document.getElementById('loading-indicator');
         const progressText = loadingIndicator.querySelector('.loading-progress');
         const loadingText = loadingIndicator.querySelector('.loading-text');
-        
+
         if (loaded === 0) {
             loadingIndicator.style.display = 'block';
             setButtonsEnabled(false);
         }
-        
+
         progressText.textContent = `Loading ${loaded} products`;
         loadingText.textContent = `Loading ${currentCategory === 'all' ? 'all categories' : categories[currentCategory].title}...`;
-        
+
         if (loaded === total) {
             setTimeout(() => {
                 loadingIndicator.style.display = 'none';
@@ -143,22 +229,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function createProductCard(imagePath, category) {
+    function createProductCard(imageBlobUrl, category, originalPath) {
         const col = document.createElement('div');
         col.className = 'col-6 col-md-4 col-lg-3 mb-4';
-        
+
         const card = document.createElement('div');
         card.className = 'product-card';
         card.setAttribute('data-category', category);
-        
+
         const img = document.createElement('img');
-        img.src = imagePath;
+        img.src = imageBlobUrl;
         img.className = 'product-image';
         img.alt = category;
         img.loading = 'lazy';
-        
-        img.onclick = () => openModal(imagePath, category);
-        
+
+        img.onclick = () => openModal(imageBlobUrl, category);
+
         card.appendChild(img);
         col.appendChild(card);
         return col;
@@ -169,13 +255,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const endIdx = Math.min(startIdx + PRODUCTS_PER_PAGE, currentImages.length);
         const batch = currentImages.slice(startIdx, endIdx);
 
-        batch.forEach(img => {
-            const image = new Image();
-            image.onload = () => {
-                productGrid.appendChild(createProductCard(img.path, img.category));
-            };
-            image.onerror = () => {};
-            image.src = img.path;
+        batch.forEach(async (img) => {
+            if (img.blobUrl) {
+                productGrid.appendChild(createProductCard(img.blobUrl, img.category, img.originalPath));
+            }
         });
 
         currentPage++;
@@ -185,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Updated function to load images dynamically from index
+    // Updated function to load images from GitHub API
     async function loadImages(category) {
         productGrid.innerHTML = '';
         currentPage = 1;
@@ -200,7 +283,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 categoryImages.forEach(filename => {
                     imagesToLoad.push({
                         path: `${value.path}/${filename}`,
-                        category: value.title
+                        category: value.title,
+                        filename: filename
                     });
                 });
             });
@@ -211,12 +295,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Category not found:', category);
                 return;
             }
-            
+
             const categoryImages = imageIndex[category] || [];
             categoryImages.forEach(filename => {
                 imagesToLoad.push({
                     path: `${categoryInfo.path}/${filename}`,
-                    category: categoryInfo.title
+                    category: categoryInfo.title,
+                    filename: filename
                 });
             });
         }
@@ -228,26 +313,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateLoadingProgress(0, imagesToLoad.length, category);
 
-        const preloadPromises = imagesToLoad.map(img => {
-            return new Promise((resolve) => {
-                const image = new Image();
-                image.onload = () => {
-                    currentImages.push(img);
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                    resolve();
-                };
-                image.onerror = () => {
-                    console.log('Failed to load image:', img.path);
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                    resolve();
-                };
-                image.src = img.path;
-            });
-        });
+        // Load images concurrently but with rate limiting to avoid API limits
+        const concurrencyLimit = 5; // Process 5 images at a time
 
-        await Promise.all(preloadPromises);
+        for (let i = 0; i < imagesToLoad.length; i += concurrencyLimit) {
+            const batch = imagesToLoad.slice(i, i + concurrencyLimit);
+
+            const batchPromises = batch.map(async (img) => {
+                try {
+                    const blobUrl = await fetchImageFromGitHub(img.path);
+                    if (blobUrl) {
+                        currentImages.push({
+                            blobUrl: blobUrl,
+                            category: img.category,
+                            originalPath: img.path,
+                            filename: img.filename
+                        });
+                    }
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                } catch (error) {
+                    console.error('Error loading image:', img.path, error);
+                    loadedCount++;
+                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+                }
+            });
+
+            await Promise.all(batchPromises);
+
+            // Small delay between batches to be nice to GitHub API
+            if (i + concurrencyLimit < imagesToLoad.length) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
 
         loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
@@ -255,11 +353,22 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMoreProducts();
     }
 
-    window.openModal = function(imagePath, category) {
-        const path = imagePath.replace(/ /g, '%20');
-        const encodedPath = path.replace(/%20/g, '%252520').replace(/\//g, '%2F');
-        const url = `https://purnimajewellers.pages.dev/product?product=${encodedPath}&category=${category}`;
-        window.location.href = url;
+    window.openModal = function(imageBlobUrl, category) {
+        // For modal, we can use the blob URL directly
+        // You might want to modify this based on your modal implementation
+        console.log('Opening modal for:', category, imageBlobUrl);
+
+        // Example: If you have a modal that shows the image
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        if (modal && modalImg) {
+            modalImg.src = imageBlobUrl;
+            // Show modal using Bootstrap or your preferred method
+            if (typeof bootstrap !== 'undefined') {
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            }
+        }
     };
 
     loadMoreBtn.addEventListener('click', loadMoreProducts);
@@ -269,6 +378,13 @@ document.addEventListener('DOMContentLoaded', function() {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             loadImages(button.dataset.category);
+        });
+    });
+
+    // Clean up blob URLs when page is about to unload to prevent memory leaks
+    window.addEventListener('beforeunload', () => {
+        imageCache.forEach(blobUrl => {
+            URL.revokeObjectURL(blobUrl);
         });
     });
 
