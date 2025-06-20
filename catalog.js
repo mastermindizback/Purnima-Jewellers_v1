@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const whatsappNumber = '919377404477';
 
     // GitHub API configuration - replace with your actual values
-    const GITHUB_API_BASE = 'https://api.github.com/repos/your-username/mastermindizback/Purnima-Jewellers_v1/contents';
+    const GITHUB_API_BASE = 'https://api.github.com/repos/mastermindizback/Purnima-Jewellers_v1/contents';
     const GITHUB_TOKEN = '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'; // Optional, for higher rate limits
 
     // Cache for loaded images to avoid re-fetching
