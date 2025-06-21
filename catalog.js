@@ -68,6 +68,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Function to detect MIME type from file extension
+    function getMimeType(filename) {
+        const ext = filename.toLowerCase().split('.').pop();
+        const mimeTypes = {
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png',
+            'gif': 'image/gif',
+            'webp': 'image/webp'
+        };
+        return mimeTypes[ext] || 'image/jpeg';
+    }
+
     // Function to fetch binary content from GitHub API and convert to blob URL
     async function fetchImageFromGitHub(filePath) {
         // Check cache first
@@ -97,15 +110,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // GitHub API returns base64 encoded content for binary files
             if (data.content && data.encoding === 'base64') {
-                // Convert base64 to binary
-                const binaryString = atob(data.content);
+                // Remove whitespace and newlines from base64 string
+                const cleanBase64 = data.content.replace(/\s/g, '');
+
+                // Convert base64 to binary using fetch with data URL
+                const mimeType = getMimeType(filePath);
+                const dataUrl = `data:${mimeType};base64,${cleanBase64}`;
+
+                // Convert data URL to blob
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const objectURL = URL.createObjectURL(blob);
+
+                // Cache the result
+                imageCache.set(filePath, objectURL);
+
+                return objectURL;
+            } else {
+                throw new Error('Invalid content format from GitHub API');
+            }
+        } catch (error) {
+            console.error('Error fetching image from GitHub:', error);
+            return null;
+        }
+    }
+
+    // Alternative method using manual base64 decoding (if needed)
+    async function fetchImageFromGitHubManual(filePath) {
+        // Check cache first
+        if (imageCache.has(filePath)) {
+            return imageCache.get(filePath);
+        }
+
+        try {
+            const headers = {
+                'Accept': 'application/vnd.github.v3+json'
+            };
+
+            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
+                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+            }
+
+            const response = await fetch(`${GITHUB_API_BASE}/${encodeURIComponent(filePath)}`, {
+                headers: headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.content && data.encoding === 'base64') {
+                // Clean base64 string
+                const cleanBase64 = data.content.replace(/\s/g, '');
+
+                // Manual base64 to binary conversion
+                const binaryString = atob(cleanBase64);
                 const bytes = new Uint8Array(binaryString.length);
+
                 for (let i = 0; i < binaryString.length; i++) {
                     bytes[i] = binaryString.charCodeAt(i);
                 }
 
-                // Create blob and object URL
-                const blob = new Blob([bytes], { type: 'image/jpeg' });
+                // Create blob with proper MIME type
+                const mimeType = getMimeType(filePath);
+                const blob = new Blob([bytes], { type: mimeType });
                 const objectURL = URL.createObjectURL(blob);
 
                 // Cache the result
@@ -147,7 +217,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (data.encoding === 'base64') {
                     // Handle base64 encoded content (binary upload)
-                    jsonString = atob(data.content);
+                    const cleanBase64 = data.content.replace(/\s/g, '');
+                    jsonString = atob(cleanBase64);
                 } else {
                     // Handle plain text content (text upload)
                     jsonString = data.content;
@@ -243,6 +314,12 @@ document.addEventListener('DOMContentLoaded', function() {
         img.alt = category;
         img.loading = 'lazy';
 
+        // Add error handling for image loading
+        img.onerror = function() {
+            console.error('Failed to load image:', imageBlobUrl);
+            this.style.display = 'none';
+        };
+
         img.onclick = () => openModal(imageBlobUrl, category);
 
         card.appendChild(img);
@@ -314,14 +391,20 @@ document.addEventListener('DOMContentLoaded', function() {
         updateLoadingProgress(0, imagesToLoad.length, category);
 
         // Load images concurrently but with rate limiting to avoid API limits
-        const concurrencyLimit = 5; // Process 5 images at a time
+        const concurrencyLimit = 3; // Reduced to 3 to be more conservative
 
         for (let i = 0; i < imagesToLoad.length; i += concurrencyLimit) {
             const batch = imagesToLoad.slice(i, i + concurrencyLimit);
 
             const batchPromises = batch.map(async (img) => {
                 try {
-                    const blobUrl = await fetchImageFromGitHub(img.path);
+                    // Try the primary method first, fallback to manual if needed
+                    let blobUrl = await fetchImageFromGitHub(img.path);
+                    if (!blobUrl) {
+                        console.log('Trying manual decoding for:', img.path);
+                        blobUrl = await fetchImageFromGitHubManual(img.path);
+                    }
+
                     if (blobUrl) {
                         currentImages.push({
                             blobUrl: blobUrl,
@@ -329,7 +412,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             originalPath: img.path,
                             filename: img.filename
                         });
+                    } else {
+                        console.error('Failed to load image:', img.path);
                     }
+
                     loadedCount++;
                     updateLoadingProgress(loadedCount, imagesToLoad.length, category);
                 } catch (error) {
@@ -343,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Small delay between batches to be nice to GitHub API
             if (i + concurrencyLimit < imagesToLoad.length) {
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
         }
 
@@ -354,16 +440,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.openModal = function(imageBlobUrl, category) {
-        // For modal, we can use the blob URL directly
-        // You might want to modify this based on your modal implementation
         console.log('Opening modal for:', category, imageBlobUrl);
 
-        // Example: If you have a modal that shows the image
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
         if (modal && modalImg) {
             modalImg.src = imageBlobUrl;
-            // Show modal using Bootstrap or your preferred method
             if (typeof bootstrap !== 'undefined') {
                 const bsModal = new bootstrap.Modal(modal);
                 bsModal.show();
