@@ -9,244 +9,48 @@ document.addEventListener('DOMContentLoaded', function() {
     let imageIndex = {};
     const whatsappNumber = '919377404477';
 
-    // GitHub API configuration - replace with your actual values
-    const GITHUB_API_BASE = 'https://api.github.com/repos/mastermindizback/Purnima-Jewellers_v1/contents';
-    const GITHUB_TOKEN = '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'; // Optional, for higher rate limits
+    // PythonAnywhere API configuration
+    const API_BASE_URL = 'https://vihar.pythonanywhere.com'; // Replace with your actual PythonAnywhere domain
 
-    // Cache for loaded images to avoid re-fetching
-    const imageCache = new Map();
-
-    // Category mappings
+    // Category mappings (matching the Flask app)
     const categories = {
         'antitarnish': {
-            path: 'PJ Jewellery Pics/Antitarnish Jewellery',
             title: 'Antitarnish Jewellery'
         },
         'bali': {
-            path: 'PJ Jewellery Pics/Bali and halfbali style earrings',
             title: 'Bali Earrings'
         },
         'bangles': {
-            path: 'PJ Jewellery Pics/Bangles',
             title: 'Bangles'
         },
         'bracelets': {
-            path: 'PJ Jewellery Pics/Bracelets',
             title: 'Bracelets'
         },
         'delicate-pendant': {
-            path: 'PJ Jewellery Pics/Delicate Pendant Sets',
             title: 'Delicate Pendant Sets'
         },
         'kundan-heavy': {
-            path: 'PJ Jewellery Pics/Kundan Heavy Sets',
             title: 'Kundan Heavy Sets'
         },
         'kundan': {
-            path: 'PJ Jewellery Pics/Kundan earrings',
             title: 'Kundan Earrings'
         },
         'ring-nath': {
-            path: 'PJ Jewellery Pics/RingNath',
             title: 'Ring & Nath'
         },
         'sets': {
-            path: 'PJ Jewellery Pics/Sets',
             title: 'Complete Sets'
         },
         'silver': {
-            path: 'PJ Jewellery Pics/Silver Replicas',
             title: 'Silver Replicas'
         },
         'studs': {
-            path: 'PJ Jewellery Pics/Studs',
             title: 'Studs'
         },
         'temple': {
-            path: 'PJ Jewellery Pics/Temple Jewellery',
             title: 'Temple Jewellery'
         }
     };
-
-    // Function to detect MIME type from file extension
-    function getMimeType(filename) {
-        const ext = filename.toLowerCase().split('.').pop();
-        const mimeTypes = {
-            'jpg': 'image/jpeg',
-            'jpeg': 'image/jpeg',
-            'png': 'image/png',
-            'gif': 'image/gif',
-            'webp': 'image/webp'
-        };
-        return mimeTypes[ext] || 'image/jpeg';
-    }
-
-    // Function to fetch binary content from GitHub API and convert to blob URL
-    async function fetchImageFromGitHub(filePath) {
-        // Check cache first
-        if (imageCache.has(filePath)) {
-            return imageCache.get(filePath);
-        }
-
-        try {
-            const headers = {
-                'Accept': 'application/vnd.github.v3+json'
-            };
-
-            // Add authorization header if token is provided
-            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
-                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
-            }
-
-            const response = await fetch(`${GITHUB_API_BASE}/${encodeURIComponent(filePath)}`, {
-                headers: headers
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // GitHub API returns base64 encoded content for binary files
-            if (data.content && data.encoding === 'base64') {
-                // Remove whitespace and newlines from base64 string
-                const cleanBase64 = data.content.replace(/\s/g, '');
-
-                // Convert base64 to binary using fetch with data URL
-                const mimeType = getMimeType(filePath);
-                const dataUrl = `data:${mimeType};base64,${cleanBase64}`;
-
-                // Convert data URL to blob
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const objectURL = URL.createObjectURL(blob);
-
-                // Cache the result
-                imageCache.set(filePath, objectURL);
-
-                return objectURL;
-            } else {
-                throw new Error('Invalid content format from GitHub API');
-            }
-        } catch (error) {
-            console.error('Error fetching image from GitHub:', error);
-            return null;
-        }
-    }
-
-    // Alternative method using manual base64 decoding (if needed)
-    async function fetchImageFromGitHubManual(filePath) {
-        // Check cache first
-        if (imageCache.has(filePath)) {
-            return imageCache.get(filePath);
-        }
-
-        try {
-            const headers = {
-                'Accept': 'application/vnd.github.v3+json'
-            };
-
-            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
-                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
-            }
-
-            const response = await fetch(`${GITHUB_API_BASE}/${encodeURIComponent(filePath)}`, {
-                headers: headers
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.content && data.encoding === 'base64') {
-                // Clean base64 string
-                const cleanBase64 = data.content.replace(/\s/g, '');
-
-                // Manual base64 to binary conversion
-                const binaryString = atob(cleanBase64);
-                const bytes = new Uint8Array(binaryString.length);
-
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-
-                // Create blob with proper MIME type
-                const mimeType = getMimeType(filePath);
-                const blob = new Blob([bytes], { type: mimeType });
-                const objectURL = URL.createObjectURL(blob);
-
-                // Cache the result
-                imageCache.set(filePath, objectURL);
-
-                return objectURL;
-            } else {
-                throw new Error('Invalid content format from GitHub API');
-            }
-        } catch (error) {
-            console.error('Error fetching image from GitHub:', error);
-            return null;
-        }
-    }
-
-    // Load image index from JSON file (also from GitHub API)
-    async function loadImageIndex() {
-        try {
-            const headers = {
-                'Accept': 'application/vnd.github.v3+json'
-            };
-
-            if (GITHUB_TOKEN && GITHUB_TOKEN !== 'your-github-token') {
-                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
-            }
-
-            const response = await fetch(`${GITHUB_API_BASE}/images-index.json`, {
-                headers: headers
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to load image index');
-            }
-
-            const data = await response.json();
-
-            if (data.content) {
-                let jsonString;
-
-                if (data.encoding === 'base64') {
-                    // Handle base64 encoded content (binary upload)
-                    const cleanBase64 = data.content.replace(/\s/g, '');
-                    jsonString = atob(cleanBase64);
-                } else {
-                    // Handle plain text content (text upload)
-                    jsonString = data.content;
-                }
-
-                imageIndex = JSON.parse(jsonString);
-                console.log('Image index loaded:', imageIndex);
-            } else {
-                throw new Error('Invalid image index format');
-            }
-        } catch (error) {
-            console.error('Error loading image index:', error);
-            console.log('Falling back to default image loading method');
-            imageIndex = generateFallbackIndex();
-        }
-    }
-
-    // Fallback method - generates default numbered images (1-10 for each category)
-    function generateFallbackIndex() {
-        const fallbackIndex = {};
-        Object.keys(categories).forEach(category => {
-            fallbackIndex[category] = [];
-            for (let i = 1; i <= 10; i++) {
-                fallbackIndex[category].push(`${i}.jpeg`);
-            }
-        });
-        return fallbackIndex;
-    }
 
     // Check for product in URL parameters when page loads
     const urlParams = new URLSearchParams(window.location.search);
@@ -300,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function createProductCard(imageBlobUrl, category, originalPath) {
+    function createProductCard(imageUrl, category, filename) {
         const col = document.createElement('div');
         col.className = 'col-6 col-md-4 col-lg-3 mb-4';
 
@@ -309,18 +113,18 @@ document.addEventListener('DOMContentLoaded', function() {
         card.setAttribute('data-category', category);
 
         const img = document.createElement('img');
-        img.src = imageBlobUrl;
+        img.src = imageUrl;
         img.className = 'product-image';
         img.alt = category;
         img.loading = 'lazy';
 
         // Add error handling for image loading
         img.onerror = function() {
-            console.error('Failed to load image:', imageBlobUrl);
+            console.error('Failed to load image:', imageUrl);
             this.style.display = 'none';
         };
 
-        img.onclick = () => openModal(imageBlobUrl, category);
+        img.onclick = () => openModal(imageUrl, category);
 
         card.appendChild(img);
         col.appendChild(card);
@@ -332,10 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const endIdx = Math.min(startIdx + PRODUCTS_PER_PAGE, currentImages.length);
         const batch = currentImages.slice(startIdx, endIdx);
 
-        batch.forEach(async (img) => {
-            if (img.blobUrl) {
-                productGrid.appendChild(createProductCard(img.blobUrl, img.category, img.originalPath));
-            }
+        batch.forEach((img) => {
+            productGrid.appendChild(createProductCard(img.url, img.category, img.filename));
         });
 
         currentPage++;
@@ -345,7 +147,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Updated function to load images from GitHub API
+    // Load image index from PythonAnywhere API
+    async function loadImageIndex() {
+        try {
+            console.log('Loading image index from API...');
+            const response = await fetch(`${API_BASE_URL}/api/images/index`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                imageIndex = data.data;
+                console.log('Image index loaded:', imageIndex);
+
+                // Update categories if provided by API
+                if (data.categories) {
+                    Object.keys(data.categories).forEach(key => {
+                        if (categories[key]) {
+                            categories[key].title = data.categories[key];
+                        }
+                    });
+                }
+            } else {
+                throw new Error(data.error || 'Failed to load image index');
+            }
+        } catch (error) {
+            console.error('Error loading image index:', error);
+            console.log('Falling back to empty index');
+            imageIndex = {};
+        }
+    }
+
+    // Load images from PythonAnywhere API
     async function loadImages(category) {
         productGrid.innerHTML = '';
         currentPage = 1;
@@ -359,9 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const categoryImages = imageIndex[key] || [];
                 categoryImages.forEach(filename => {
                     imagesToLoad.push({
-                        path: `${value.path}/${filename}`,
-                        category: value.title,
-                        filename: filename
+                        category: key,
+                        filename: filename,
+                        categoryTitle: value.title
                     });
                 });
             });
@@ -376,76 +212,51 @@ document.addEventListener('DOMContentLoaded', function() {
             const categoryImages = imageIndex[category] || [];
             categoryImages.forEach(filename => {
                 imagesToLoad.push({
-                    path: `${categoryInfo.path}/${filename}`,
-                    category: categoryInfo.title,
-                    filename: filename
+                    category: category,
+                    filename: filename,
+                    categoryTitle: categoryInfo.title
                 });
             });
         }
 
         if (imagesToLoad.length === 0) {
             console.log('No images found for category:', category);
+            updateLoadingProgress(0, 0, category);
             return;
         }
 
         updateLoadingProgress(0, imagesToLoad.length, category);
 
-        // Load images concurrently but with rate limiting to avoid API limits
-        const concurrencyLimit = 3; // Reduced to 3 to be more conservative
+        // Process images and create URLs
+        imagesToLoad.forEach((img, index) => {
+            const imageUrl = `${API_BASE_URL}/api/images/${img.category}/${img.filename}`;
 
-        for (let i = 0; i < imagesToLoad.length; i += concurrencyLimit) {
-            const batch = imagesToLoad.slice(i, i + concurrencyLimit);
-
-            const batchPromises = batch.map(async (img) => {
-                try {
-                    // Try the primary method first, fallback to manual if needed
-                    let blobUrl = await fetchImageFromGitHub(img.path);
-                    if (!blobUrl) {
-                        console.log('Trying manual decoding for:', img.path);
-                        blobUrl = await fetchImageFromGitHubManual(img.path);
-                    }
-
-                    if (blobUrl) {
-                        currentImages.push({
-                            blobUrl: blobUrl,
-                            category: img.category,
-                            originalPath: img.path,
-                            filename: img.filename
-                        });
-                    } else {
-                        console.error('Failed to load image:', img.path);
-                    }
-
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                } catch (error) {
-                    console.error('Error loading image:', img.path, error);
-                    loadedCount++;
-                    updateLoadingProgress(loadedCount, imagesToLoad.length, category);
-                }
+            currentImages.push({
+                url: imageUrl,
+                category: img.categoryTitle,
+                filename: img.filename,
+                categoryKey: img.category
             });
 
-            await Promise.all(batchPromises);
+            loadedCount++;
+            updateLoadingProgress(loadedCount, imagesToLoad.length, category);
+        });
 
-            // Small delay between batches to be nice to GitHub API
-            if (i + concurrencyLimit < imagesToLoad.length) {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-        }
-
+        // Show load more button if needed
         loadMoreContainer.style.display = currentImages.length > PRODUCTS_PER_PAGE ? 'block' : 'none';
         loadMoreBtn.disabled = false;
 
+        // Load first batch
         loadMoreProducts();
     }
 
-    window.openModal = function(imageBlobUrl, category) {
-        console.log('Opening modal for:', category, imageBlobUrl);
+    window.openModal = function(imageUrl, category) {
+        console.log('Opening modal for:', category, imageUrl);
 
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
         if (modal && modalImg) {
-            modalImg.src = imageBlobUrl;
+            modalImg.src = imageUrl;
             if (typeof bootstrap !== 'undefined') {
                 const bsModal = new bootstrap.Modal(modal);
                 bsModal.show();
@@ -463,15 +274,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Clean up blob URLs when page is about to unload to prevent memory leaks
-    window.addEventListener('beforeunload', () => {
-        imageCache.forEach(blobUrl => {
-            URL.revokeObjectURL(blobUrl);
-        });
-    });
-
     // Initialize the application
     async function init() {
+        console.log('Initializing catalog...');
         await loadImageIndex();
         loadImages('all');
 
