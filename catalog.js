@@ -52,21 +52,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Check for product in URL parameters when page loads
+    // Check for product in URL parameters and redirect to product page
     const urlParams = new URLSearchParams(window.location.search);
     const productPath = urlParams.get('product');
     const productCategory = urlParams.get('category');
 
-    function tryOpenModal() {
-        if (typeof bootstrap !== 'undefined' && productPath && productCategory) {
-            const decodedPath = decodeURIComponent(productPath);
-            openModal(decodedPath, productCategory);
-        }
-    }
-
     if (productPath && productCategory) {
-        tryOpenModal();
-        setTimeout(tryOpenModal, 1000);
+        // Redirect to product page if product parameters are present
+        const productURL = `product.html?product=${productPath}&category=${productCategory}`;
+        window.location.href = productURL;
+        return;
     }
 
     function setButtonsEnabled(enabled) {
@@ -250,45 +245,17 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMoreProducts();
     }
 
-    // Updated openModal function with WhatsApp functionality
+    // Redirect to product page instead of opening modal
     window.openModal = function(imageUrl, category, filename = null) {
-        console.log('Opening modal for:', category, imageUrl);
+        console.log('Redirecting to product page for:', category, imageUrl);
 
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImage');
-        const modalTitle = modal.querySelector('.modal-title');
-        const whatsappBtn = modal.querySelector('.btn-whatsapp');
+        // Create clean URL for product page
+        const encodedImageUrl = encodeURIComponent(imageUrl);
+        const encodedCategory = encodeURIComponent(category);
+        const productURL = `product.html?product=${encodedImageUrl}&category=${encodedCategory}`;
 
-        if (modal && modalImg) {
-            modalImg.src = imageUrl;
-            modalTitle.textContent = category;
-
-            // Create shareable URL for this product
-            const encodedImageUrl = encodeURIComponent(imageUrl);
-            const encodedCategory = encodeURIComponent(category);
-            const shareURL = `${window.location.origin}${window.location.pathname}?product=${encodedImageUrl}&category=${encodedCategory}`;
-
-            // Update WhatsApp button with proper inquiry message
-            const encodedShareURL = encodeURIComponent(shareURL);
-            const whatsappMessage = `Inquiry on this ${category.toLowerCase()} from Purnima Jewellers: ${encodedShareURL}`;
-            const encodedWhatsappMessage = encodeURIComponent(whatsappMessage);
-
-            whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=${encodedWhatsappMessage}`;
-
-            // Update URL without page reload for sharing
-            const newURL = shareURL;
-            window.history.replaceState({}, '', newURL);
-
-            if (typeof bootstrap !== 'undefined') {
-                const bsModal = new bootstrap.Modal(modal);
-                bsModal.show();
-
-                // Clean up URL when modal is closed
-                modal.addEventListener('hidden.bs.modal', function() {
-                    window.history.replaceState({}, '', window.location.pathname);
-                }, { once: true });
-            }
-        }
+        // Redirect to product page
+        window.location.href = productURL;
     };
 
     loadMoreBtn.addEventListener('click', loadMoreProducts);
