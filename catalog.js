@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.display = 'none';
         };
 
-        img.onclick = () => openModal(imageUrl, category);
+        img.onclick = () => openModal(imageUrl, category, filename);
 
         card.appendChild(img);
         col.appendChild(card);
@@ -250,16 +250,43 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMoreProducts();
     }
 
-    window.openModal = function(imageUrl, category) {
+    // Updated openModal function with WhatsApp functionality
+    window.openModal = function(imageUrl, category, filename = null) {
         console.log('Opening modal for:', category, imageUrl);
 
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
+        const modalTitle = modal.querySelector('.modal-title');
+        const whatsappBtn = modal.querySelector('.btn-whatsapp');
+
         if (modal && modalImg) {
             modalImg.src = imageUrl;
+            modalTitle.textContent = category;
+
+            // Create shareable URL for this product
+            const encodedImageUrl = encodeURIComponent(imageUrl);
+            const encodedCategory = encodeURIComponent(category);
+            const shareURL = `${window.location.origin}${window.location.pathname}?product=${encodedImageUrl}&category=${encodedCategory}`;
+
+            // Update WhatsApp button with proper inquiry message
+            const encodedShareURL = encodeURIComponent(shareURL);
+            const whatsappMessage = `Inquiry on this ${category.toLowerCase()} from Purnima Jewellers: ${encodedShareURL}`;
+            const encodedWhatsappMessage = encodeURIComponent(whatsappMessage);
+
+            whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=${encodedWhatsappMessage}`;
+
+            // Update URL without page reload for sharing
+            const newURL = shareURL;
+            window.history.replaceState({}, '', newURL);
+
             if (typeof bootstrap !== 'undefined') {
                 const bsModal = new bootstrap.Modal(modal);
                 bsModal.show();
+
+                // Clean up URL when modal is closed
+                modal.addEventListener('hidden.bs.modal', function() {
+                    window.history.replaceState({}, '', window.location.pathname);
+                }, { once: true });
             }
         }
     };
