@@ -152,7 +152,8 @@
       "18.jpeg",
       "19.jpeg",
       "20.jpeg",
-      "21.jpeg"
+      "21.jpeg",
+      "22.jpg"
     ],
     "bangles": [
       "1.jpeg",
@@ -404,7 +405,8 @@
       "18.jpeg",
       "19.jpeg",
       "20.jpeg",
-      "21.jpeg"
+      "21.jpeg",
+      "22.jpg"
     ],
     "silver": [
       "1.jpeg",
@@ -509,5 +511,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-06-21T21:58:08.943946"
+  "last_updated": "2025-06-22T16:41:48.769892"
 }
