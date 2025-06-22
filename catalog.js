@@ -64,6 +64,36 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Auto-scroll functionality
+    function scrollToProducts() {
+        const catalogGrid = document.querySelector('.catalog-grid');
+        if (catalogGrid) {
+            // Add a small delay to ensure content is rendered
+            setTimeout(() => {
+                catalogGrid.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+    }
+
+    // Alternative scroll method - scroll to first product
+    function scrollToFirstProduct() {
+        setTimeout(() => {
+            const firstProduct = document.querySelector('.product-card');
+            if (firstProduct) {
+                firstProduct.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            } else {
+                // Fallback to catalog grid if no products yet
+                scrollToProducts();
+            }
+        }, 500);
+    }
+
     function setButtonsEnabled(enabled) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(button => {
@@ -95,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loadingIndicator.style.display = 'none';
                 setButtonsEnabled(true);
+                // Auto-scroll to products after loading is complete
+                scrollToFirstProduct();
             }, 500);
         }
     }
@@ -177,12 +209,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Load images from PythonAnywhere API
-    async function loadImages(category) {
+    async function loadImages(category, shouldAutoScroll = true) {
         productGrid.innerHTML = '';
         currentPage = 1;
         currentImages = [];
         let imagesToLoad = [];
         let loadedCount = 0;
+
+        // Auto-scroll immediately when starting to load (except for initial load)
+        if (shouldAutoScroll) {
+            scrollToProducts();
+        }
 
         if (category === 'all') {
             // Load images from all categories
@@ -262,9 +299,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // Add visual feedback for button click
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = '';
+            }, 150);
+
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            loadImages(button.dataset.category);
+
+            // Load images with auto-scroll enabled
+            loadImages(button.dataset.category, true);
         });
     });
 
@@ -272,7 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function init() {
         console.log('Initializing catalog...');
         await loadImageIndex();
-        loadImages('all');
+        // Don't auto-scroll on initial load
+        loadImages('all', false);
 
         // Handle hash in URL for direct category access
         const hash = window.location.hash.slice(1);
