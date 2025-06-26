@@ -309,8 +309,7 @@
       "8.jpeg",
       "9.jpeg",
       "10.jpg",
-      "11.jpg",
-      "12.jpg"
+      "11.jpg"
     ],
     "sets": [
       "2.jpeg",
@@ -625,9 +624,15 @@
       "52.jpeg",
       "53.jpeg",
       "54.jpeg",
-      "55.jpeg"
+      "55.jpeg",
+      "56.jpg",
+      "57.jpg",
+      "58.jpg",
+      "59.jpg",
+      "60.jpg",
+      "61.jpg"
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-06-26T14:39:00.495188"
+  "last_updated": "2025-06-26T14:46:19.063642"
 }
