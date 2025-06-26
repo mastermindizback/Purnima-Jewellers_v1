@@ -180,7 +180,13 @@
       "22.jpg",
       "23.jpg",
       "24.jpg",
-      "25.jpg"
+      "25.jpg",
+      "26.jpg",
+      "27.jpg",
+      "28.jpg",
+      "29.jpg",
+      "30.jpg",
+      "31.jpg"
     ],
     "kundan": [
       "1.jpeg",
@@ -574,5 +580,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-06-26T12:57:40.036537"
+  "last_updated": "2025-06-26T13:59:05.208465"
 }
