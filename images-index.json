@@ -167,7 +167,14 @@
       "29.jpeg",
       "30.jpeg",
       "31.jpeg",
-      "32.jpeg"
+      "32.jpeg",
+      "33.jpg",
+      "34.jpg",
+      "35.jpg",
+      "36.jpg",
+      "37.jpg",
+      "38.jpg",
+      "39.jpg"
     ],
     "antitarnish": [
       "2.jpeg",
@@ -619,5 +626,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-06-26T14:33:00.917718"
+  "last_updated": "2025-06-26T14:36:15.675423"
 }
