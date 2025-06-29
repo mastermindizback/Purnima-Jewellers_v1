@@ -67,7 +67,18 @@
       "54.jpg",
       "55.jpg",
       "56.jpg",
-      "57.jpg"
+      "57.jpg",
+      "58.jpg",
+      "59.jpg",
+      "60.jpg",
+      "61.jpg",
+      "62.jpg",
+      "63.jpg",
+      "64.jpg",
+      "65.jpg",
+      "66.jpg",
+      "67.jpg",
+      "68.jpg"
     ],
     "delicate-pendant": [
       "2.jpeg",
@@ -634,5 +645,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-06-29T09:41:34.367669"
+  "last_updated": "2025-06-29T09:47:18.946073"
 }
