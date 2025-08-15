@@ -440,19 +440,11 @@
       "76.jpeg",
       "77.jpeg",
       "78.jpeg",
-      "79.jpeg",
-      "80.jpeg",
       "81.jpeg",
-      "82.jpeg",
-      "84.jpeg",
-      "85.jpeg",
       "86.jpeg",
       "87.jpeg",
-      "88.jpeg",
       "89.jpeg",
       "90.jpeg",
-      "91.jpg",
-      "92.jpg",
       "93.jpg",
       "94.jpg",
       "95.jpg",
@@ -466,10 +458,7 @@
       "103.jpg",
       "104.jpg",
       "105.jpg",
-      "106.jpg",
       "107.jpg",
-      "108.jpg",
-      "109.jpg",
       "110.jpg",
       "111.jpg",
       "112.jpg",
@@ -480,8 +469,13 @@
       "117.jpg",
       "118.jpg",
       "119.jpg",
-      "120.jpg",
-      "121.jpg"
+      "121.jpg",
+      "122.jpg",
+      "123.jpg",
+      "124.jpg",
+      "125.jpg",
+      "126.jpg",
+      "127.jpg"
     ],
     "bali": [
       "1.jpeg",
@@ -630,5 +624,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-08-15T06:49:24.356420"
+  "last_updated": "2025-08-15T06:56:57.383144"
 }
