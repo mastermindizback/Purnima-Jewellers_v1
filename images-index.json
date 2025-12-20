@@ -505,7 +505,10 @@
       "34.jpg",
       "35.jpg",
       "36.jpg",
-      "37.jpg"
+      "37.jpg",
+      "38.jpg",
+      "39.jpg",
+      "40.jpg"
     ],
     "silver": [
       "1.jpeg",
@@ -616,5 +619,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-20T15:03:13.636711"
+  "last_updated": "2025-12-20T15:06:51.694857"
 }
