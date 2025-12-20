@@ -93,13 +93,11 @@
       "20.jpeg",
       "21.jpeg",
       "22.jpeg",
-      "23.jpeg",
       "24.jpeg",
       "25.jpeg",
       "26.jpeg",
       "27.jpeg",
       "28.jpeg",
-      "29.jpeg",
       "33.jpeg",
       "36.jpeg",
       "39.jpeg",
@@ -125,15 +123,10 @@
       "62.jpg",
       "64.jpg",
       "65.jpg",
-      "66.jpg",
       "67.jpg",
       "70.jpg",
-      "71.jpg",
       "72.jpg",
-      "73.jpg",
       "74.jpg",
-      "75.jpg",
-      "76.jpg",
       "77.jpg",
       "78.jpg",
       "79.jpg"
@@ -511,7 +504,8 @@
       "33.jpg",
       "34.jpg",
       "35.jpg",
-      "36.jpg"
+      "36.jpg",
+      "37.jpg"
     ],
     "silver": [
       "1.jpeg",
@@ -622,5 +616,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-20T09:05:21.583867"
+  "last_updated": "2025-12-20T14:52:13.524804"
 }
