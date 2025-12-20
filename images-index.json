@@ -195,7 +195,6 @@
       "19.jpeg",
       "20.jpeg",
       "21.jpeg",
-      "22.jpg",
       "23.jpg",
       "24.jpg",
       "25.jpg",
@@ -622,5 +621,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-13T23:03:52.185024"
+  "last_updated": "2025-12-20T09:01:43.096193"
 }
