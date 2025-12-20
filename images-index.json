@@ -135,7 +135,8 @@
       "75.jpg",
       "76.jpg",
       "77.jpg",
-      "78.jpg"
+      "78.jpg",
+      "79.jpg"
     ],
     "studs": [
       "1.jpeg",
@@ -621,5 +622,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-20T09:01:43.096193"
+  "last_updated": "2025-12-20T09:05:21.583867"
 }
