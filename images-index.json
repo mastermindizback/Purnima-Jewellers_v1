@@ -220,7 +220,11 @@
       "27.jpg",
       "28.jpg",
       "29.jpg",
-      "31.jpg"
+      "31.jpg",
+      "32.jpg",
+      "33.jpg",
+      "34.jpg",
+      "35.jpg"
     ],
     "kundan": [
       "2.jpeg",
@@ -469,7 +473,6 @@
       "127.jpg"
     ],
     "bali": [
-      "1.jpeg",
       "2.jpeg",
       "3.jpeg",
       "4.jpeg",
@@ -478,8 +481,6 @@
       "7.jpeg",
       "8.jpeg",
       "9.jpeg",
-      "10.jpeg",
-      "11.jpeg",
       "12.jpeg",
       "13.jpeg",
       "14.jpeg",
@@ -490,7 +491,6 @@
       "19.jpeg",
       "20.jpeg",
       "21.jpeg",
-      "22.jpg",
       "23.jpg",
       "24.jpg",
       "25.jpg",
@@ -504,7 +504,6 @@
       "33.jpg",
       "34.jpg",
       "35.jpg",
-      "36.jpg",
       "37.jpg",
       "38.jpg",
       "39.jpg",
@@ -619,5 +618,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-20T15:06:51.694857"
+  "last_updated": "2025-12-20T15:11:10.324906"
 }
