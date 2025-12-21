@@ -474,7 +474,13 @@
       "124.jpg",
       "125.jpg",
       "126.jpg",
-      "127.jpg"
+      "127.jpg",
+      "128.jpg",
+      "129.jpg",
+      "130.jpg",
+      "131.jpg",
+      "132.jpg",
+      "133.jpg"
     ],
     "bali": [
       "2.jpeg",
@@ -622,5 +628,5 @@
     ]
   },
   "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-21T15:33:01.576146"
+  "last_updated": "2025-12-21T15:35:55.523779"
 }
