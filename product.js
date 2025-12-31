@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Use the original product path for sharing since it's already in the correct format
-    const shareURL = `https://purnimajewellers.pages.dev/product?product=${productPath}&category=${productCategory}`;
+    const shareURL = `https://catalog.purnimajewels.in/product?product=${productPath}&category=${productCategory}`;
     
     // Update WhatsApp button
     const encodedShareURL = encodeURIComponent(shareURL);
