@@ -313,7 +313,8 @@
       "7.jpeg",
       "8.jpeg",
       "10.jpg",
-      "11.jpg"
+      "11.jpg",
+      "12.jpeg"
     ],
     "sets": [
       "2.jpeg",
@@ -627,6 +628,8 @@
       "61.jpg"
     ]
   },
-  "api_base_url": "https://vihar.pythonanywhere.com",
-  "last_updated": "2025-12-21T15:35:55.523779"
+  "api_base_url": "https://admin.purnimajewels.in",
+  "image_base_url": "https://purnimajewels.in/images/catalog",
+  "catalog_url": "https://catalog.purnimajewels.in",
+  "last_updated": "2025-12-31T07:59:25.873532"
 }
