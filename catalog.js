@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const whatsappNumber = '919377404477';
 
     // PythonAnywhere API configuration
-    const API_BASE_URL = 'https://vihar.pythonanywhere.com'; // Replace with your actual PythonAnywhere domain
+    //const API_BASE_URL = 'https://vihar.pythonanywhere.com'; // Replace with your actual PythonAnywhere domain
+    const API_BASE_URL = 'https://admin.purnimajewels.in';
+    const IMAGE_BASE_URL = 'https://purnimajewels.in/images/catalog'; // Direct image access
+
 
     // Category mappings (matching the Flask app)
     const categories = {
