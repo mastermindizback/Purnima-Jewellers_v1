@@ -477,7 +477,14 @@
       "127.jpg",
       "129.jpg",
       "130.jpg",
-      "133.jpg"
+      "133.jpg",
+      "134.jpg",
+      "135.jpg",
+      "136.jpg",
+      "137.jpg",
+      "138.jpg",
+      "139.jpg",
+      "140.jpg"
     ],
     "bali": [
       "2.jpeg",
@@ -627,5 +634,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-11T16:13:37.683052"
+  "last_updated": "2026-02-11T16:18:24.363177"
 }
