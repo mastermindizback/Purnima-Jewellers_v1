@@ -125,7 +125,12 @@
       "96.jpg",
       "97.jpg",
       "98.jpg",
-      "99.jpg"
+      "99.jpg",
+      "100.jpg",
+      "101.jpg",
+      "102.jpg",
+      "103.jpg",
+      "104.jpg"
     ],
     "studs": [
       "1.jpeg",
@@ -621,5 +626,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-12T16:17:06.863203"
+  "last_updated": "2026-02-12T16:25:01.180353"
 }
