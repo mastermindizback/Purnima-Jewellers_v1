@@ -273,7 +273,12 @@
       "63.jpg",
       "64.jpg",
       "65.jpg",
-      "66.jpg"
+      "66.jpg",
+      "67.jpg",
+      "68.jpg",
+      "69.jpg",
+      "70.jpg",
+      "71.jpg"
     ],
     "kundan": [
       "2.jpeg",
@@ -668,5 +673,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-15T16:19:18.277169"
+  "last_updated": "2026-02-15T16:28:41.492108"
 }
