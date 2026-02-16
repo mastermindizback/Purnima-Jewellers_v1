@@ -527,7 +527,9 @@
       "169.jpg",
       "170.jpg",
       "171.jpg",
-      "172.jpg"
+      "172.jpg",
+      "173.jpg",
+      "174.jpg"
     ],
     "bali": [
       "2.jpeg",
@@ -677,5 +679,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-16T14:57:57.785707"
+  "last_updated": "2026-02-16T15:03:23.352532"
 }
