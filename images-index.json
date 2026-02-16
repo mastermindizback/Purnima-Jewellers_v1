@@ -142,14 +142,12 @@
       "113.jpg",
       "114.jpg",
       "115.jpg",
-      "116.jpg",
       "117.jpg",
       "118.jpg",
       "119.jpg",
       "120.jpg",
       "121.jpg",
-      "122.jpg",
-      "123.jpg"
+      "122.jpg"
     ],
     "studs": [
       "1.jpeg",
@@ -432,7 +430,6 @@
       "10.jpeg",
       "11.jpeg",
       "13.jpeg",
-      "14.jpeg",
       "19.jpeg",
       "20.jpeg",
       "21.jpeg",
@@ -443,7 +440,6 @@
       "28.jpeg",
       "29.jpeg",
       "30.jpeg",
-      "31.jpeg",
       "32.jpeg",
       "33.jpeg",
       "35.jpeg",
@@ -477,12 +473,10 @@
       "78.jpeg",
       "81.jpeg",
       "87.jpeg",
-      "90.jpeg",
       "93.jpg",
       "95.jpg",
       "96.jpg",
       "97.jpg",
-      "98.jpg",
       "99.jpg",
       "101.jpg",
       "102.jpg",
@@ -528,7 +522,12 @@
       "164.jpg",
       "165.jpg",
       "166.jpg",
-      "167.jpg"
+      "167.jpg",
+      "168.jpg",
+      "169.jpg",
+      "170.jpg",
+      "171.jpg",
+      "172.jpg"
     ],
     "bali": [
       "2.jpeg",
@@ -678,5 +677,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-15T16:41:46.745185"
+  "last_updated": "2026-02-16T14:57:57.785707"
 }
