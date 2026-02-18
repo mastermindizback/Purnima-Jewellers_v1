@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Category mappings (matching the Flask app)
     const categories = {
         'antitarnish': {
-            title: 'Antitarnish Jewellery'
+            title: 'Antitarnish Chain, Earrings and Bracelets'
         },
         'bali': {
-            title: 'Bali Earrings'
+            title: 'Bali & Half Bali Earrings'
         },
         'bangles': {
             title: 'Bangles'
@@ -36,22 +36,22 @@ document.addEventListener('DOMContentLoaded', function() {
             title: 'Kundan Heavy Sets'
         },
         'kundan': {
-            title: 'Kundan Earrings'
+            title: 'Kundan and AD Earrings'
         },
         'ring-nath': {
-            title: 'Ring & Nath'
+            title: 'Rings Naths and Tikas'
         },
         'sets': {
-            title: 'Complete Sets'
+            title: 'AD Heavy Sets'
         },
         'silver': {
             title: 'Silver Replicas'
         },
         'studs': {
-            title: 'Studs'
+            title: 'AD and Kundan Studs'
         },
         'temple': {
-            title: 'Temple Jewellery'
+            title: 'Gold Polish Jewellery'
         }
     };
 
