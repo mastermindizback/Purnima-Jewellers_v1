@@ -647,11 +647,16 @@
       "63.jpg",
       "64.jpg",
       "65.jpg",
-      "66.jpg"
+      "66.jpg",
+      "67.jpg",
+      "68.jpg",
+      "69.jpg",
+      "70.jpg",
+      "71.jpg"
     ]
   },
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-19T12:13:40.703803"
+  "last_updated": "2026-02-19T12:19:20.456883"
 }
