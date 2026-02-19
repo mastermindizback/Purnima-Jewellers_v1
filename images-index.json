@@ -653,11 +653,16 @@
       "74.jpg",
       "76.jpg",
       "77.jpg",
-      "78.jpg"
+      "78.jpg",
+      "79.jpg",
+      "80.jpg",
+      "81.jpg",
+      "82.jpg",
+      "83.jpg"
     ]
   },
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-19T12:36:27.975529"
+  "last_updated": "2026-02-19T12:39:24.902490"
 }
