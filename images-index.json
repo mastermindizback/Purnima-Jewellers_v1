@@ -263,7 +263,12 @@
       "65.jpg",
       "66.jpg",
       "67.jpg",
-      "68.jpg"
+      "68.jpg",
+      "69.jpg",
+      "70.jpg",
+      "71.jpg",
+      "72.jpg",
+      "73.jpg"
     ],
     "bangles": [
       "2.jpeg",
@@ -715,5 +720,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-20T06:58:11.665672"
+  "last_updated": "2026-02-20T07:02:34.520388"
 }
