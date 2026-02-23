@@ -429,7 +429,12 @@
       "53.jpg",
       "54.jpg",
       "55.jpg",
-      "56.jpg"
+      "56.jpg",
+      "57.jpg",
+      "58.jpg",
+      "59.jpg",
+      "60.jpg",
+      "61.jpg"
     ],
     "bracelets": [
       "2.jpeg",
@@ -705,5 +710,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-23T07:06:00.131843"
+  "last_updated": "2026-02-23T07:11:00.635929"
 }
