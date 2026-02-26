@@ -410,7 +410,12 @@
       "101.jpg",
       "102.jpg",
       "103.jpg",
-      "104.jpg"
+      "104.jpg",
+      "105.jpg",
+      "106.jpg",
+      "107.jpg",
+      "108.jpg",
+      "109.jpg"
     ],
     "temple": [
       "1.jpeg",
@@ -748,5 +753,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T08:00:52.391498"
+  "last_updated": "2026-02-26T08:16:11.159807"
 }
