@@ -177,7 +177,10 @@
       "145.jpg",
       "146.jpg",
       "147.jpg",
-      "148.jpg"
+      "148.jpg",
+      "149.jpg",
+      "150.jpg",
+      "151.jpg"
     ],
     "studs": [
       "1.jpeg",
@@ -462,12 +465,8 @@
       "1.jpeg",
       "2.jpeg",
       "3.jpeg",
-      "4.jpeg",
       "5.jpeg",
-      "7.jpeg",
-      "8.jpeg",
       "10.jpg",
-      "11.jpg",
       "12.jpg"
     ],
     "sets": [
@@ -796,5 +795,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T12:01:47.365927"
+  "last_updated": "2026-02-26T12:13:19.499775"
 }
