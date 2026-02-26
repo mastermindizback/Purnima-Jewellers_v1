@@ -637,7 +637,9 @@
       "65.jpg",
       "66.jpg",
       "67.jpg",
-      "68.jpg"
+      "68.jpg",
+      "69.jpg",
+      "70.jpg"
     ],
     "silver": [
       "1.jpeg",
@@ -763,5 +765,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T08:38:41.819282"
+  "last_updated": "2026-02-26T08:45:07.702037"
 }
