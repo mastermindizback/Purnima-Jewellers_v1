@@ -421,7 +421,8 @@
       "7.jpeg",
       "8.jpeg",
       "10.jpg",
-      "11.jpg"
+      "11.jpg",
+      "12.jpg"
     ],
     "sets": [
       "41.jpeg",
@@ -747,5 +748,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T07:57:56.038165"
+  "last_updated": "2026-02-26T08:00:52.391498"
 }
