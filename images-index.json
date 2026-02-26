@@ -710,7 +710,12 @@
       "51.jpg",
       "52.jpg",
       "53.jpg",
-      "54.jpg"
+      "54.jpg",
+      "55.jpg",
+      "56.jpg",
+      "57.jpg",
+      "58.jpg",
+      "59.jpg"
     ],
     "ring-nath": [
       "2.jpeg",
@@ -791,5 +796,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T13:45:55.198653"
+  "last_updated": "2026-02-26T13:51:05.692955"
 }
