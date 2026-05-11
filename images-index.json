@@ -316,14 +316,12 @@
       "35.jpg",
       "36.jpg",
       "37.jpg",
-      "38.jpg",
       "39.jpg",
       "47.jpg",
       "49.jpg",
       "50.jpg",
       "51.jpg",
       "52.jpg",
-      "53.jpg",
       "54.jpg",
       "55.jpg",
       "56.jpg",
@@ -816,5 +814,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-02-26T14:16:21.430661"
+  "last_updated": "2026-05-11T08:34:57.481456"
 }
