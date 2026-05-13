@@ -178,7 +178,9 @@
       "185.jpg",
       "186.jpg",
       "187.jpg",
-      "188.jpg"
+      "188.jpg",
+      "189.jpg",
+      "190.jpg"
     ],
     "studs": [
       "1.jpeg",
@@ -823,5 +825,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-05-13T11:53:12.526456"
+  "last_updated": "2026-05-13T12:56:01.366176"
 }
