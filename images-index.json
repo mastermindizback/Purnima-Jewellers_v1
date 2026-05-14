@@ -233,7 +233,10 @@
       "63.jpg",
       "64.jpg",
       "65.jpg",
-      "66.jpg"
+      "66.jpg",
+      "67.jpg",
+      "68.jpg",
+      "69.jpg"
     ],
     "antitarnish": [
       "2.jpeg",
@@ -831,5 +834,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-05-14T10:21:54.778626"
+  "last_updated": "2026-05-14T10:51:57.230474"
 }
