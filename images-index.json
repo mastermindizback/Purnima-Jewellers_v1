@@ -80,7 +80,6 @@
       "112.jpg",
       "113.jpg",
       "114.jpg",
-      "115.jpg",
       "116.jpg"
     ],
     "delicate-pendant": [
@@ -837,5 +836,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-05-18T11:27:00.554632"
+  "last_updated": "2026-05-18T11:37:19.691424"
 }
