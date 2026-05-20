@@ -404,7 +404,6 @@
       "18.jpeg",
       "19.jpeg",
       "21.jpeg",
-      "22.jpeg",
       "23.jpeg",
       "24.jpeg",
       "25.jpeg",
@@ -420,15 +419,10 @@
       "38.jpeg",
       "39.jpeg",
       "40.jpeg",
-      "41.jpeg",
-      "43.jpeg",
       "44.jpeg",
-      "47.jpg",
       "48.jpg",
       "49.jpg",
       "50.jpg",
-      "52.jpg",
-      "53.jpg",
       "54.jpg",
       "55.jpg",
       "56.jpg",
@@ -485,9 +479,7 @@
       "114.jpg",
       "115.jpg",
       "116.jpg",
-      "117.jpg",
-      "118.jpg",
-      "119.jpg"
+      "117.jpg"
     ],
     "temple": [
       "1.jpeg",
@@ -846,5 +838,5 @@
   "api_base_url": "https://admin.purnimajewels.in",
   "image_base_url": "https://purnimajewels.in/images/catalog",
   "catalog_url": "https://catalog.purnimajewels.in",
-  "last_updated": "2026-05-20T07:44:54.595987"
+  "last_updated": "2026-05-20T08:38:30.173954"
 }
