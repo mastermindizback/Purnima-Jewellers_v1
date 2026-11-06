@@ -368,7 +368,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load first batch
         loadMoreProducts();
     }
-    }
 
     // Redirect to product page instead of opening modal
     window.openModal = function(imageUrl, category, filename = null) {
