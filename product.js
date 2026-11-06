@@ -33,12 +33,32 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'catalog.html';
     };
     
-    // Use the original product path for sharing since it's already in the correct format
-    const shareURL = `https://catalog.purnimajewels.in/product?product=${productPath}&category=${productCategory}`;
-    
+    // Extract filename / design number
+    let designNum = '';
+    try {
+        const parts = decodedPath.split('/');
+        const lastPart = parts[parts.length - 1];
+        designNum = lastPart.split('.')[0];
+    } catch (e) {
+        designNum = '';
+    }
+
+    // Direct clean share link
+    const shareURL = `https://catalog.purnimajewels.in/product.html?category=${encodeURIComponent(productCategory)}&product=${encodeURIComponent(productPath)}`;
+
+    // Build human-friendly Vishwakarma WhatsApp inquiry template
+    const messageLines = [
+        `*Hello Purnima Jewellers!* 👋`,
+        `I would like to inquire about this design from your digital catalog:`,
+        `• *Collection*: ${productCategory}`,
+        designNum ? `• *Design / Item*: #${designNum}` : null,
+        `• *Photo Link*: ${shareURL}`,
+        ``,
+        `Could you please share the wholesale price, availability, and ordering options?`
+    ].filter(Boolean).join('\n');
+
     // Update WhatsApp button
-    const encodedShareURL = encodeURIComponent(shareURL);
-    whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=Inquiry on this ${productCategory.toLowerCase()} from Purnima Jewellers: ${encodedShareURL}`;
+    whatsappBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageLines)}`;
     
     // Add event listener for back button
     document.querySelector('a[href="catalog.html"]').addEventListener('click', function(e) {

@@ -55,6 +55,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Static Apache directory folder names
+    const categoryFolders = {
+        'antitarnish': 'Antitarnish Jewellery',
+        'bali': 'Bali and halfbali style earrings',
+        'bangles': 'Bangles',
+        'bracelets': 'Bracelets',
+        'delicate-pendant': 'Delicate Pendant Sets',
+        'kundan-heavy': 'Kundan Heavy Sets',
+        'kundan': 'Kundan earrings',
+        'ring-nath': 'RingNath',
+        'sets': 'Sets',
+        'silver': 'Silver Replicas',
+        'studs': 'Studs',
+        'temple': 'Temple Jewellery'
+    };
+
+    // Clean Vishwakarma WhatsApp inquiry generator
+    function generateWhatsAppUrl(phoneNumber, categoryTitle, filename, photoUrl) {
+        const designNum = filename ? filename.split('.')[0] : '';
+        const shareUrl = `https://catalog.purnimajewels.in/product.html?category=${encodeURIComponent(categoryTitle)}&product=${encodeURIComponent(photoUrl)}`;
+        const message = [
+            `*Hello Purnima Jewellers!* 👋`,
+            `I would like to inquire about this design from your digital catalog:`,
+            `• *Collection*: ${categoryTitle}`,
+            designNum ? `• *Design / Item*: #${designNum}` : null,
+            `• *Photo Link*: ${shareUrl}`,
+            ``,
+            `Could you please share the wholesale price, availability, and ordering options?`
+        ].filter(Boolean).join('\n');
+
+        return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    }
+
     // Check for product in URL parameters and redirect to product page
     const urlParams = new URLSearchParams(window.location.search);
     const productPath = urlParams.get('product');
@@ -134,29 +167,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function createProductCard(imageUrl, category, filename) {
+    function createProductCard(imageUrl, categoryTitle, filename, categoryKey) {
         const col = document.createElement('div');
         col.className = 'col-6 col-md-4 col-lg-3 mb-4';
 
         const card = document.createElement('div');
-        card.className = 'product-card';
-        card.setAttribute('data-category', category);
+        card.className = 'product-card h-100 d-flex flex-column';
+        card.setAttribute('data-category', categoryKey);
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.style.cursor = 'pointer';
 
         const img = document.createElement('img');
         img.src = imageUrl;
         img.className = 'product-image';
-        img.alt = category;
+        img.alt = `${categoryTitle} #${filename.split('.')[0]}`;
         img.loading = 'lazy';
 
-        // Add error handling for image loading
+        // Auto fallback to Flask API if Apache static file is missing or in dev
         img.onerror = function() {
-            console.error('Failed to load image:', imageUrl);
-            this.style.display = 'none';
+            if (!this.dataset.fallbackTried) {
+                this.dataset.fallbackTried = '1';
+                this.src = `${API_BASE_URL}/api/images/${categoryKey}/${filename}`;
+            } else {
+                console.error('Failed to load image:', imageUrl);
+                this.style.display = 'none';
+            }
         };
 
-        img.onclick = () => openModal(imageUrl, category, filename);
+        imgWrapper.onclick = () => openModal(imageUrl, categoryTitle, filename);
+        imgWrapper.appendChild(img);
 
-        card.appendChild(img);
+        // 1-Tap WhatsApp & Design # Actions
+        const actions = document.createElement('div');
+        actions.className = 'product-card-actions';
+
+        const badge = document.createElement('span');
+        badge.className = 'product-design-badge';
+        badge.textContent = `#${filename.split('.')[0]}`;
+
+        const waBtn = document.createElement('a');
+        waBtn.className = 'btn-whatsapp-card';
+        waBtn.target = '_blank';
+        waBtn.rel = 'noopener noreferrer';
+        waBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Inquire';
+        waBtn.href = generateWhatsAppUrl(whatsappNumber, categoryTitle, filename, imageUrl);
+
+        actions.appendChild(badge);
+        actions.appendChild(waBtn);
+
+        card.appendChild(imgWrapper);
+        card.appendChild(actions);
         col.appendChild(card);
         return col;
     }
@@ -167,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const batch = currentImages.slice(startIdx, endIdx);
 
         batch.forEach((img) => {
-            productGrid.appendChild(createProductCard(img.url, img.category, img.filename));
+            productGrid.appendChild(createProductCard(img.url, img.category, img.filename, img.categoryKey));
         });
 
         currentPage++;
@@ -177,10 +238,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Load image index from PythonAnywhere API
+    // Load image index from Cloudflare edge first, fallback to API
     async function loadImageIndex() {
+        // 1. Try local Cloudflare edge first (fastest, 0ms latency, zero load on server)
         try {
-            console.log('Loading image index from API...');
+            console.log('Loading image index from Cloudflare edge...');
+            const response = await fetch('./images-index.json');
+
+            if (response.ok) {
+                const data = await response.json();
+                imageIndex = data.images || data.data || {};
+                console.log('Edge image index loaded successfully');
+                if (data.categories) {
+                    Object.keys(data.categories).forEach(folder => {
+                        const slug = data.categories[folder];
+                        if (categories[slug]) {
+                            categories[slug].title = folder;
+                        }
+                    });
+                }
+                return;
+            }
+        } catch (edgeError) {
+            console.warn('Edge index not reachable, falling back to API:', edgeError);
+        }
+
+        // 2. Fallback to API if edge is not available
+        try {
+            console.log('Loading image index from Admin API...');
             const response = await fetch(`${API_BASE_URL}/api/images/index`);
 
             if (!response.ok) {
@@ -190,10 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (data.success) {
-                imageIndex = data.data;
-                console.log('Image index loaded:', imageIndex);
+                imageIndex = data.data || data.images || {};
+                console.log('API image index loaded successfully');
 
-                // Update categories if provided by API
                 if (data.categories) {
                     Object.keys(data.categories).forEach(key => {
                         if (categories[key]) {
@@ -206,12 +290,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error loading image index:', error);
-            console.log('Falling back to empty index');
             imageIndex = {};
         }
     }
 
-    // Load images from PythonAnywhere API
+    // Load images with direct Apache static URLs
     async function loadImages(category, shouldAutoScroll = true) {
         productGrid.innerHTML = '';
         currentPage = 1;
@@ -262,9 +345,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateLoadingProgress(0, imagesToLoad.length, category);
 
-        // Process images and create URLs
+        // Process images and create direct Apache static URLs
         imagesToLoad.forEach((img, index) => {
-            const imageUrl = `${API_BASE_URL}/api/images/${img.category}/${img.filename}`;
+            const folderName = categoryFolders[img.category] || img.category;
+            const imageUrl = `${IMAGE_BASE_URL}/${encodeURIComponent(folderName)}/${encodeURIComponent(img.filename)}`;
 
             currentImages.push({
                 url: imageUrl,
@@ -283,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Load first batch
         loadMoreProducts();
+    }
     }
 
     // Redirect to product page instead of opening modal
